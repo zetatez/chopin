@@ -1,115 +1,8 @@
-chopin
+/* See LICENSE file for copyright and license details. */
+// config.def.h
 
-# chopin
-
-## Dependencies
-- vim
-- wps
-- libreoffice
-- zathura
-- evince
-- foliate
-- okularr
-- sxiv
-- mpv
-- 7z
-- unrar
-- atool
-
-## Installation
-
-```bash
-git clone https://github.com/zetatez/chopin.git
-
-cd chopin
-sudo make clean install
-
-# sudo make uninstall
-```
-
-## Usage
-```bash
-Usage: chopin [-vhoecmr] [FILE]
-  -o, --open         open a file with your default setting automatically
-  -e, --exec         exec a file with your default setting automatically
-  -c, --cp           cp a file
-  -m, --mv           mv a file
-  -r, --rm           rm a file
-  -h, --help         help
-  -v, --version      version
-```
-
-- open a file
-	```bash
-	chopin -o file
-	```
-
-- exec a script
-	```bash
-	chopin -e file
-	```
-
-- cp a file
-	```bash
-	chopin -c file
-	```
-
-- mv a file
-	```bash
-	chopin -m file
-	```
-
-- rm a file
-	```bash
-	chopin -r file
-	```
-
-## Workflow: Search and Handle
-What can `chopin` do when combined with `fd` and `fzf` ?
-
-- fd  ->  fzf ->  chopin
-
-[fd]: find a file list -> [fzf]: interactive filter -> [chopin]: open, exec, cp, mv, rm.
-
-## Best Practice
-- Add following lines to your `~/.zshrc` and try.
-```zsh
-# chopin open
-alias chopin-open="chopin -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s '^F' 'chopin-open\n'
-
-# chopin exec
-alias chopin-exec="chopin -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql . './'|fzf --prompt='exec>'  --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s '^X' 'chopin-exec\n'
-
-# chopin cp
-alias chopin-cp="chopin -c \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='cp>'  --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s "^N" 'chopin-cp\n'
-
-# chopin mv
-alias chopin-mv="chopin -m \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='mv>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s "^V" 'chopin-mv\n'
-
-# chopin rm
-alias chopin-rm="chopin -r \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rm>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s "^Z" 'chopin-rm\n'
-
-# chopin open books
-alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude ~/go . '$HOME'|fzf --prompt='books>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s '^P' 'chopin-open-book\n'
-
-# chopin open wiki
-alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s '^W' 'chopin-open-wiki\n'
-
-# chopin open media
-alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\""
-bindkey -s '^A' 'chopin-open-media\n'
-```
-
-## Configuration
-```c
-// see config.def.h
+/* Author: lorenzo */
+/* E-mail: lorenzo<zetatez@icloud.com> */
 
 struct KV {
     char *key;
@@ -200,12 +93,12 @@ static const struct KV exec_map[] = {
     {".sh"    , "filename=%s; sh ${filename}"},
     {".py"    , "filename=%s; python ${filename}"},
     {".jl"    , "filename=%s; julia ${filename}"},
-    {".tex"   , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex ${filename%.*}.aux; xelatex -interaction nonstopmode ${filename}; zathura ${filename%.*}.pdf"},
+    {".tex"   , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex *.aux; xelatex -interaction nonstopmode ${filename}; zathura *.pdf"},
     {".c"     , "filename=%s; cd ${filename%.*}; sh build.sh"},
-    {".c+ "   , "filename=%s; cd ${filename%.*}; sh build.sh"},
+    {".c++"   , "filename=%s; cd ${filename%.*}; sh build.sh"},
     {".go"    , "filename=%s; go run ${filename}"},
-    {".scala" , "filename=%s; scala ${filename}"},
-    {".java"  , "filename=%s; javac ${filename}; java ${filename%.*}"},
+    {".scala" , "filename=%s; cd ${filename%.*}; sh build.sh"},
+    {".java"  , "filename=%s; cd ${filename%.*}; sh build.sh"},
     {".rs"    , "filename=%s; cargo build && cargo run"},
     {".rb"    , "filename=%s; ruby ${filename}"},
     {".lua"   , "filename=%s; lua ${filename}"},
@@ -225,9 +118,5 @@ static const struct KV exec_else_map[] = {
 static const char *cp_opt           = "-fr"; // recommended "-ir"
 static const char *mv_opt           = "-f";  // recommended "-i"
 static const char *rm_opt           = "-fr"; // recommended "-ir"
-```
 
-## LICENSE
-
-MIT.
 
