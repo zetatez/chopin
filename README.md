@@ -9,7 +9,7 @@ chopin
 - zathura
 - evince
 - foliate
-- okularr
+- okular
 - sxiv
 - mpv
 - 7z
@@ -22,7 +22,10 @@ chopin
 git clone https://github.com/zetatez/chopin.git
 
 cd chopin
-sudo make clean install
+rm -f config.h && sudo make clean install
+
+# or
+sh build.sh
 
 # sudo make uninstall
 ```
@@ -95,15 +98,15 @@ alias chopin-rm="chopin -r \"\$(fd --type f --hidden --exclude .git . './'|fzf -
 bindkey -s "^Z" 'chopin-rm\n'
 
 # chopin open books
-alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude ~/go . '$HOME'|fzf --prompt='books>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\""
+alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude ~/go . '$HOME/obsidian/docs'|fzf --prompt='books>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\";exit"
 bindkey -s '^P' 'chopin-open-book\n'
 
 # chopin open wiki
-alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
+alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/obsidian/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
 bindkey -s '^W' 'chopin-open-wiki\n'
 
 # chopin open media
-alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\""
+alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\";exit"
 bindkey -s '^A' 'chopin-open-media\n'
 ```
 
@@ -111,120 +114,116 @@ bindkey -s '^A' 'chopin-open-media\n'
 ```c
 // see config.def.h
 
-struct KV {
-    char *key;
-    char *value;
-};
-
 /* open rules */
-static const struct KV open_map[] = {
-    {".cbr"    , "zathura"},
-    {".cbz"    , "zathura"},
-    {".djvu"   , "evince"},
-    {".epub"   , "foliate"},
-    {".mobi"   , "okularr"},
-    {".pdf"    , "zathura"},
-    {".doc"    , "wps"},
-    {".docm"   , "wps"},
-    {".docx"   , "wps"},
-    {".dot"    , "wps"},
-    {".dotx"   , "wps"},
-    {".fodt"   , "wps"},
-    {".odt"    , "wps"},
-    {".ott"    , "wps"},
-    {".rtf"    , "wps"},
-    {".uot"    , "wps"},
-    {".pptx"   , "libreoffice"},
-    {".dbf"    , "wps"},
-    {".dif"    , "wps"},
-    {".fods"   , "wps"},
-    {".ods"    , "wps"},
-    {".ots"    , "wps"},
-    {".slk"    , "wps"},
-    {".uos"    , "wps"},
-    {".xls"    , "wps"},
-    {".xlsm"   , "wps"},
-    {".xlsx"   , "wps"},
-    {".xlt"    , "wps"},
-    {".Z"      , "atool --list --"},
-    {".a"      , "atool --list --"},
-    {".ace"    , "atool --list --"},
-    {".alz"    , "atool --list --"},
-    {".arc"    , "atool --list --"},
-    {".arj"    , "atool --list --"},
-    {".bz"     , "atool --list --"},
-    {".bz2"    , "atool --list --"},
-    {".cab"    , "atool --list --"},
-    {".cpio"   , "atool --list --"},
-    {".deb"    , "atool --list --"},
-    {".gz"     , "atool --list --"},
-    {".jar"    , "atool --list --"},
-    {".lha"    , "atool --list --"},
-    {".lz"     , "atool --list --"},
-    {".lzh"    , "atool --list --"},
-    {".lzma"   , "atool --list --"},
-    {".lzo"    , "atool --list --"},
-    {".rpm"    , "atool --list --"},
-    {".rz"     , "atool --list --"},
-    {".t7z"    , "atool --list --"},
-    {".tZ"     , "atool --list --"},
-    {".tar"    , "atool --list --"},
-    {".tbz"    , "atool --list --"},
-    {".tbz2"   , "atool --list --"},
-    {".tgz"    , "atool --list --"},
-    {".tlz"    , "atool --list --"},
-    {".txz"    , "atool --list --"},
-    {".tzo"    , "atool --list --"},
-    {".war"    , "atool --list --"},
-    {".xpi"    , "atool --list --"},
-    {".xz"     , "atool --list --"},
-    {".zip"    , "atool --list --"},
-    {".rar"    , "unrar -lt -p- --"},
-    {".7z"     , "7z l -p- --"},
-    {".json"   , "vim"},
-    {NULL      , NULL}
+static const struct KFV open_map[] = {
+    /* .ext  , &    , application        */
+    {".cbr"  , 1    , "zathura"          } ,
+    {".cbz"  , 1    , "zathura"          } ,
+    {".djvu" , 1    , "evince"           } ,
+    {".epub" , 1    , "foliate"          } ,
+    {".mobi" , 1    , "okularr"          } ,
+    {".pdf"  , 1    , "zathura"          } ,
+    {".doc"  , 1    , "wps"              } ,
+    {".docm" , 1    , "wps"              } ,
+    {".docx" , 1    , "wps"              } ,
+    {".dot"  , 1    , "wps"              } ,
+    {".dotx" , 1    , "wps"              } ,
+    {".fodt" , 1    , "wps"              } ,
+    {".odt"  , 1    , "wps"              } ,
+    {".ott"  , 1    , "wps"              } ,
+    {".rtf"  , 1    , "wps"              } ,
+    {".uot"  , 1    , "wps"              } ,
+    {".pptx" , 1    , "libreoffice"      } ,
+    {".dbf"  , 1    , "wps"              } ,
+    {".dif"  , 1    , "wps"              } ,
+    {".fods" , 1    , "wps"              } ,
+    {".ods"  , 1    , "wps"              } ,
+    {".ots"  , 1    , "wps"              } ,
+    {".slk"  , 1    , "wps"              } ,
+    {".uos"  , 1    , "wps"              } ,
+    {".xls"  , 1    , "wps"              } ,
+    {".xlsm" , 1    , "wps"              } ,
+    {".xlsx" , 1    , "wps"              } ,
+    {".xlt"  , 1    , "wps"              } ,
+    {".Z"    , 0    , "atool --list --"  } ,
+    {".a"    , 0    , "atool --list --"  } ,
+    {".ace"  , 0    , "atool --list --"  } ,
+    {".alz"  , 0    , "atool --list --"  } ,
+    {".arc"  , 0    , "atool --list --"  } ,
+    {".arj"  , 0    , "atool --list --"  } ,
+    {".bz"   , 0    , "atool --list --"  } ,
+    {".bz2"  , 0    , "atool --list --"  } ,
+    {".cab"  , 0    , "atool --list --"  } ,
+    {".cpio" , 0    , "atool --list --"  } ,
+    {".deb"  , 0    , "atool --list --"  } ,
+    {".gz"   , 0    , "atool --list --"  } ,
+    {".jar"  , 0    , "atool --list --"  } ,
+    {".lha"  , 0    , "atool --list --"  } ,
+    {".lz"   , 0    , "atool --list --"  } ,
+    {".lzh"  , 0    , "atool --list --"  } ,
+    {".lzma" , 0    , "atool --list --"  } ,
+    {".lzo"  , 0    , "atool --list --"  } ,
+    {".rpm"  , 0    , "atool --list --"  } ,
+    {".rz"   , 0    , "atool --list --"  } ,
+    {".t7z"  , 0    , "atool --list --"  } ,
+    {".tZ"   , 0    , "atool --list --"  } ,
+    {".tar"  , 0    , "atool --list --"  } ,
+    {".tbz"  , 0    , "atool --list --"  } ,
+    {".tbz2" , 0    , "atool --list --"  } ,
+    {".tgz"  , 0    , "atool --list --"  } ,
+    {".tlz"  , 0    , "atool --list --"  } ,
+    {".txz"  , 0    , "atool --list --"  } ,
+    {".tzo"  , 0    , "atool --list --"  } ,
+    {".war"  , 0    , "atool --list --"  } ,
+    {".xpi"  , 0    , "atool --list --"  } ,
+    {".xz"   , 0    , "atool --list --"  } ,
+    {".zip"  , 0    , "atool --list --"  } ,
+    {".rar"  , 0    , "unrar -lt -p- --" } ,
+    {".7z"   , 0    , "7z l -p- --"      } ,
+    {".json" , 0    , "vim"              } ,
 };
 
 /* open rules for rest */
-static const struct KV open_else_map[] = {
-    {"image/*" , "sxiv"}                     , // sxiv , feh   , img2txt --gamma=0.5 , ..
-    {"video/*" , "mpv --geometry=100%x100%"} , // mpv  , vlc   , ...
-    {"audio/*" , "mpv"}                      , // mpv  , vlc   , ...
-    {"text/*"  , "vim"}                      , // vim  , emacs ,
-    {"inode/*" , "vim"}                      , // vim  , emacs ,                             // inode/x-empty
-    {NULL      , NULL}
+static const struct KFV open_else_map[] = {
+    /*mine     , &    , application                */
+    {"image/*" , 1    , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5 , ..
+    {"video/*" , 1    , "mpv --geometry=100%x100%" } , // mpv  , vlc   , ...
+    {"audio/*" , 0    , "mpv"                      } , // mpv  , vlc   , ...
+    {"text/*"  , 0    , "vim"                      } , // vim  , emacs ,
+    {"inode/*" , 0    , "vim"                      } , // vim  , emacs , // inode/x-empty
 };
 
 /* exec rules */
 static const struct KV exec_map[] = {
-    {".sh"    , "filename=%s; sh ${filename}"},
-    {".py"    , "filename=%s; python ${filename}"},
-    {".jl"    , "filename=%s; julia ${filename}"},
-    {".tex"   , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex ${filename%.*}.aux; xelatex -interaction nonstopmode ${filename}; zathura ${filename%.*}.pdf"},
-    {".c"     , "filename=%s; cd ${filename%.*}; sh build.sh"},
-    {".c+ "   , "filename=%s; cd ${filename%.*}; sh build.sh"},
-    {".go"    , "filename=%s; go run ${filename}"},
-    {".scala" , "filename=%s; scala ${filename}"},
-    {".java"  , "filename=%s; javac ${filename}; java ${filename%.*}"},
-    {".rs"    , "filename=%s; cargo build && cargo run"},
-    {".rb"    , "filename=%s; ruby ${filename}"},
-    {".lua"   , "filename=%s; lua ${filename}"},
-    {".js"    , "filename=%s; node ${filename}"},
-    {".ts"    , "filename=%s; tsc ${filename}"},
-    {".sql"   , "filename=%s; mysql -uroot -p < ${filename}"},
-    {NULL     , NULL}
+    /*.ext   , shell scripts                                                                                                                          */
+    {".sh"   , "filename=%s; sh ${filename}"                                                                                                          },
+    {".py"   , "filename=%s; python ${filename}"                                                                                                      },
+    {".jl"   , "filename=%s; julia ${filename}"                                                                                                       },
+    {".tex"  , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex *.aux; xelatex -interaction nonstopmode ${filename}; zathura *.pdf" },
+    {".c"    , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
+    {".c++"  , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
+    {".go"   , "filename=%s; go run ${filename}"                                                                                                      },
+    {".scala", "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
+    {".java" , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
+    {".rs"   , "filename=%s; cargo build && cargo run"                                                                                                },
+    {".rb"   , "filename=%s; ruby ${filename}"                                                                                                        },
+    {".lua"  , "filename=%s; lua ${filename}"                                                                                                         },
+    {".js"   , "filename=%s; node ${filename}"                                                                                                        },
+    {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
+    {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           },
 };
 
 /* exec rules for rest */
 static const struct KV exec_else_map[] = {
-    {"*"      , "filename=%s; sh ${filename}"},  // any excuteble file
-    {NULL     , NULL}
+    /**   , shell scripts                  */
+    {"*"  , "filename=%s; sh ${filename }" } // any excuteble file
 };
 
 /* default options for cp, mv, rm */
 static const char *cp_opt           = "-fr"; // recommended "-ir"
 static const char *mv_opt           = "-f";  // recommended "-i"
 static const char *rm_opt           = "-fr"; // recommended "-ir"
+
 ```
 
 ## LICENSE
