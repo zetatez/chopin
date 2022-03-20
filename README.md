@@ -3,6 +3,8 @@ chopin
 # chopin
 
 ## Dependencies
+- fd
+- fzf
 - vim
 - wps
 - libreoffice
@@ -24,48 +26,20 @@ git clone https://github.com/zetatez/chopin.git
 cd chopin
 rm -f config.h && sudo make clean install
 
-# or
-sh build.sh
-
 # sudo make uninstall
 ```
 
 ## Usage
 ```bash
-Usage: chopin [-vhoecmr] [FILE]
-  -o, --open         open a file with your default setting automatically
-  -e, --exec         exec a file with your default setting automatically
-  -c, --cp           cp a file
-  -m, --mv           mv a file
-  -r, --rm           rm a file
-  -h, --help         help
-  -v, --version      version
+Usage: chopin [-vhoecmr] [file]
+  -o, --open file     open a file with your default setting automatically
+  -e, --exec file     exec a file with your default setting automatically
+  -c, --cp   file     cp a file
+  -m, --mv   file     mv a file
+  -r, --rm   file     rm a file
+  -h, --help          help
+  -v, --version       version
 ```
-
-- open a file
-	```bash
-	chopin -o file
-	```
-
-- exec a script
-	```bash
-	chopin -e file
-	```
-
-- cp a file
-	```bash
-	chopin -c file
-	```
-
-- mv a file
-	```bash
-	chopin -m file
-	```
-
-- rm a file
-	```bash
-	chopin -r file
-	```
 
 ## Workflow: Search and Handle
 What can `chopin` do when combined with `fd` and `fzf` ?

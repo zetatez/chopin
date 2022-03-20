@@ -84,7 +84,7 @@ static const struct KFV open_map[] = {
     {".zip"  , 0    , "atool --list --"  } ,
     {".rar"  , 0    , "unrar -lt -p- --" } ,
     {".7z"   , 0    , "7z l -p- --"      } ,
-    {".json" , 0    , "vim"              } ,
+    {".json" , 0    , "vim"              }
 };
 
 /* open rules for rest */
@@ -94,7 +94,7 @@ static const struct KFV open_else_map[] = {
     {"video/*" , 1    , "mpv --geometry=100%x100%" } , // mpv  , vlc   , ...
     {"audio/*" , 0    , "mpv"                      } , // mpv  , vlc   , ...
     {"text/*"  , 0    , "vim"                      } , // vim  , emacs ,
-    {"inode/*" , 0    , "vim"                      } , // vim  , emacs , // inode/x-empty
+    {"inode/*" , 0    , "vim"                      }   // vim  , emacs , // inode/x-empty
 };
 
 /* exec rules */
@@ -114,7 +114,7 @@ static const struct KV exec_map[] = {
     {".lua"  , "filename=%s; lua ${filename}"                                                                                                         },
     {".js"   , "filename=%s; node ${filename}"                                                                                                        },
     {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
-    {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           },
+    {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           }
 };
 
 /* exec rules for rest */
