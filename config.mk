@@ -10,7 +10,6 @@ MANPREFIX = ${PREFIX}/share/man
 
 # flags
 CFLAGS =
-# Solaris
 
 # compiler and linker
 CC = cc
