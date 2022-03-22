@@ -87,12 +87,18 @@ int magic_open(const char *filename) {
 
         char *filenamebk = NULL;
         filenamebk = malloc(strlen(filename)+1);
+        if (!filenamebk) {
+            return -1;
+        }
         strcpy(filenamebk, filename);
 
         // get mine type: text/xx, image/xx, video/xx, ... -> text/*, image/*, video/*, ...
         FILE *ptr = NULL;
         char *mine_type = NULL;
         mine_type = malloc(128);
+        if (!mine_type) {
+            return -1;
+        }
 
         sprintf(cmd, "file --dereference --brief --mime-type %s|awk -F / '{print $1\"/*\"}'", filename);
         ptr = popen(cmd, "r");
@@ -104,10 +110,8 @@ int magic_open(const char *filename) {
 
         // get base_name, dir_name, suffix
         char *base_name = NULL;
-        char *dir_name  = NULL;
         char *suffix    = NULL;
         base_name = basename(filenamebk);
-        dir_name  = dirname(filenamebk);
         suffix = strrchr(base_name, '.');
 
         int flag = 0;
@@ -162,6 +166,9 @@ int magic_exec(const char *filename) {
 
         char *filenamebk = NULL;
         filenamebk = malloc(strlen(filename)+1);
+        if (!filenamebk) {
+            return -1;
+        }
         strcpy(filenamebk, filename);
 
         // get base_name, suffix
@@ -207,11 +214,12 @@ int magic_cp(const char *filename) {
 
         char *filenamebk = NULL;
         filenamebk = malloc(strlen(filename)+1);
+        if (!filenamebk) {
+            return -1;
+        }
         strcpy(filenamebk, filename);
 
-        char *base_name = NULL;
         char *dir_name  = NULL;
-        base_name = basename(filenamebk);
         dir_name  = dirname(filenamebk);
 
         cmd[0] = '\0';
@@ -241,11 +249,12 @@ int magic_mv(const char *filename) {
         
         char *filenamebk = NULL;
         filenamebk = malloc(strlen(filename)+1);
+        if (!filenamebk) {
+            return -1;
+        }
         strcpy(filenamebk, filename);
 
-        char *base_name = NULL;
         char *dir_name  = NULL;
-        base_name = basename(filenamebk);
         dir_name  = dirname(filenamebk);
 
         cmd[0] = '\0';
@@ -275,6 +284,9 @@ int magic_rm(const char *filename) {
         
         char *filenamebk = NULL;
         filenamebk = malloc(strlen(filename)+1);
+        if (!filenamebk) {
+            return -1;
+        }
         strcpy(filenamebk, filename);
 
         cmd[0] = '\0';
