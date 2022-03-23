@@ -84,7 +84,8 @@ static const struct KFV open_map[] = {
     {".zip"  , 0    , "atool --list --"  } ,
     {".rar"  , 0    , "unrar -lt -p- --" } ,
     {".7z"   , 0    , "7z l -p- --"      } ,
-    {".json" , 0    , "vim"              }
+    {".json" , 0    , "vim"              } ,
+    {NULL    , 0    , NULL               }
 };
 
 /* open rules for rest */
@@ -94,7 +95,8 @@ static const struct KFV open_else_map[] = {
     {"video/*" , 1    , "mpv --geometry=100%x100%" } , // mpv  , vlc   , ...
     {"audio/*" , 0    , "mpv"                      } , // mpv  , vlc   , ...
     {"text/*"  , 0    , "vim"                      } , // vim  , emacs ,
-    {"inode/*" , 0    , "vim"                      }   // vim  , emacs , // inode/x-empty
+    {"inode/*" , 0    , "vim"                      } , // vim  , emacs , // inode/x-empty
+    {NULL      , 0    , NULL                       }
 };
 
 /* exec rules */
@@ -114,18 +116,20 @@ static const struct KV exec_map[] = {
     {".lua"  , "filename=%s; lua ${filename}"                                                                                                         },
     {".js"   , "filename=%s; node ${filename}"                                                                                                        },
     {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
-    {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           }
+    {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           },
+    {NULL    , NULL                                                                                                                                   }
 };
 
 /* exec rules for rest */
 static const struct KV exec_else_map[] = {
     /**   , shell scripts                  */
-    {"*"  , "filename=%s; sh ${filename }" } // any excuteble file
+    {"*"  , "filename=%s; sh ${filename }" }, // any excuteble file
+    {NULL , NULL                           }
 };
 
 /* default options for cp, mv, rm */
 static const char *cp_opt           = "-fr"; // recommended "-ir"
-static const char *mv_opt           = "-f";  // recommended "-i"
+static const char *mv_opt           = "-f" ; // recommended "-i"
 static const char *rm_opt           = "-fr"; // recommended "-ir"
 
 

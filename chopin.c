@@ -117,7 +117,7 @@ int magic_open(const char *filename) {
         int flag = 0;
         cmd[0] = '\0';
         if (NULL != suffix) {
-            for (int i=0; open_map[i].key; i++) {
+            for (int i=0; NULL != open_map[i].key; i++) {
                 if ( 0 == strcmp(open_map[i].key, suffix)) {
                     flag = 1;
                     if (open_map[i].flag) {
@@ -135,7 +135,7 @@ int magic_open(const char *filename) {
         // use open_else_map setting if not found in open_map
         cmd[0] = '\0';
         if (NULL == suffix || !flag) {
-            for (int i=0; open_else_map[i].key; i++) {
+            for (int i=0; NULL != open_else_map[i].key; i++) {
                 if ( 0 == strcmp(open_else_map[i].key, mine_type)) {
                     if (open_else_map[i].flag) {
                         sprintf(cmd, "(%s \"%s\" &);exit", open_else_map[i].value, filename);
@@ -179,7 +179,7 @@ int magic_exec(const char *filename) {
 
         cmd[0] = '\0';
         if (NULL != suffix) {
-            for (int i=0; exec_map[i].key; i++) {
+            for (int i=0; NULL != exec_map[i].key; i++) {
                 if ( 0 == strcmp(exec_map[i].key, suffix)) {
                     sprintf(cmd, exec_map[i].value, filename);
                     puts(cmd);
@@ -188,7 +188,7 @@ int magic_exec(const char *filename) {
                 }
             }
         } else {
-            for (int i=0; exec_else_map[i].key; i++) {
+            for (int i=0; NULL != exec_else_map[i].key; i++) {
                 if ( 0 == strcmp(exec_else_map[i].key, "*")) {
                     sprintf(cmd, exec_else_map[i].value, filename);
                     puts(cmd);
