@@ -155,6 +155,7 @@ static const struct KFV open_map[] = {
     {".rar"  , 0    , "unrar -lt -p- --" } ,
     {".7z"   , 0    , "7z l -p- --"      } ,
     {".json" , 0    , "vim"              } ,
+    {NULL    , 0    , NULL               }
 };
 
 /* open rules for rest */
@@ -165,6 +166,7 @@ static const struct KFV open_else_map[] = {
     {"audio/*" , 0    , "mpv"                      } , // mpv  , vlc   , ...
     {"text/*"  , 0    , "vim"                      } , // vim  , emacs ,
     {"inode/*" , 0    , "vim"                      } , // vim  , emacs , // inode/x-empty
+    {NULL      , 0    , NULL                       }
 };
 
 /* exec rules */
@@ -175,7 +177,7 @@ static const struct KV exec_map[] = {
     {".jl"   , "filename=%s; julia ${filename}"                                                                                                       },
     {".tex"  , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex *.aux; xelatex -interaction nonstopmode ${filename}; zathura *.pdf" },
     {".c"    , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
-    {".c++"  , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
+    {".cpp"  , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
     {".go"   , "filename=%s; go run ${filename}"                                                                                                      },
     {".scala", "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
     {".java" , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
@@ -185,18 +187,22 @@ static const struct KV exec_map[] = {
     {".js"   , "filename=%s; node ${filename}"                                                                                                        },
     {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
     {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           },
+    {NULL    , NULL                                                                                                                                   }
 };
 
 /* exec rules for rest */
 static const struct KV exec_else_map[] = {
     /**   , shell scripts                  */
-    {"*"  , "filename=%s; sh ${filename }" } // any excuteble file
+    {"*"  , "filename=%s; sh ${filename }" }, // any excuteble file
+    {NULL , NULL                           }
 };
 
 /* default options for cp, mv, rm */
 static const char *cp_opt           = "-fr"; // recommended "-ir"
-static const char *mv_opt           = "-f";  // recommended "-i"
+static const char *mv_opt           = "-f" ; // recommended "-i"
 static const char *rm_opt           = "-fr"; // recommended "-ir"
+
+
 
 ```
 
