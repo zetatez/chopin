@@ -24,7 +24,7 @@ chopin
 git clone https://github.com/zetatez/chopin.git
 
 cd chopin
-rm -f config.h && sudo make clean install
+sudo make clean install
 
 # sudo make uninstall
 ```
