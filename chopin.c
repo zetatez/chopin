@@ -82,226 +82,230 @@ int main(int argc, char *argv[]) {
 }
 
 int magic_open(const char *filename) {
-    if (filename) {
-        char cmd[MAX_CMD_LENGTH] = "";
-
-        char *filenamebk = NULL;
-        filenamebk = malloc(strlen(filename)+1);
-        if (!filenamebk) {
-            return -1;
-        }
-        strcpy(filenamebk, filename);
-
-        // get mine type: text/xx, image/xx, video/xx, ... -> text/*, image/*, video/*, ...
-        FILE *ptr = NULL;
-        char *mine_type = NULL;
-        mine_type = malloc(128);
-        if (!mine_type) {
-            return -1;
-        }
-
-        sprintf(cmd, "file --dereference --brief --mime-type %s|awk -F / '{print $1\"/*\"}'", filename);
-        ptr = popen(cmd, "r");
-        fgets(mine_type, 128, ptr);
-        pclose(ptr);
-
-        char *tmp = NULL;
-        if ((tmp = strstr(mine_type, "\n"))) { *tmp = '\0'; }
-
-        // get base_name, dir_name, suffix
-        char *base_name = NULL;
-        char *suffix    = NULL;
-        base_name = basename(filenamebk);
-        suffix = strrchr(base_name, '.');
-
-        int flag = 0;
-        cmd[0] = '\0';
-        if (NULL != suffix) {
-            for (int i=0; NULL != open_map[i].key; i++) {
-                if ( 0 == strcmp(open_map[i].key, suffix)) {
-                    flag = 1;
-                    if (open_map[i].flag) {
-                        sprintf(cmd, "(%s \"%s\" &);exit", open_map[i].value, filename);
-                    } else {
-                        sprintf(cmd, "%s \"%s\"", open_map[i].value, filename);
-                    }
-                    puts(cmd);
-                    system(cmd);
-                    break;
-                }
-            }
-        }
-
-        // use open_else_map setting if not found in open_map
-        cmd[0] = '\0';
-        if (NULL == suffix || !flag) {
-            for (int i=0; NULL != open_else_map[i].key; i++) {
-                if ( 0 == strcmp(open_else_map[i].key, mine_type)) {
-                    if (open_else_map[i].flag) {
-                        sprintf(cmd, "(%s \"%s\" &);exit", open_else_map[i].value, filename);
-                    } else {
-                        sprintf(cmd, "%s \"%s\"", open_else_map[i].value, filename);
-                    }
-                    puts(cmd);
-                    system(cmd);
-                    break;
-                }
-            }
-        }
-
-        // free
-        free(mine_type);
-        mine_type = NULL;
-        free(filenamebk);
-        filenamebk = NULL;
-
-        return 0;
+    if (!filename) {
+        return 1;
     }
-    return 1;
+
+    char cmd[MAX_CMD_LENGTH] = "";
+
+    char *filenamebk = NULL;
+    filenamebk = malloc(strlen(filename)+1);
+    if (!filenamebk) {
+        return -1;
+    }
+    strcpy(filenamebk, filename);
+
+    // get mine type: text/xx, image/xx, video/xx, ... -> text/*, image/*, video/*, ...
+    FILE *ptr = NULL;
+    char *mine_type = NULL;
+    mine_type = malloc(128);
+    if (!mine_type) {
+        return -1;
+    }
+
+    sprintf(cmd, "file --dereference --brief --mime-type %s|awk -F / '{print $1\"/*\"}'", filename);
+    ptr = popen(cmd, "r");
+    fgets(mine_type, 128, ptr);
+    pclose(ptr);
+
+    char *tmp = NULL;
+    if ((tmp = strstr(mine_type, "\n"))) { *tmp = '\0'; }
+
+    // get base_name, dir_name, suffix
+    char *base_name = NULL;
+    char *suffix    = NULL;
+    base_name = basename(filenamebk);
+    suffix = strrchr(base_name, '.');
+
+    int flag = 0;
+    cmd[0] = '\0';
+    if (NULL != suffix) {
+        for (int i=0; NULL != open_map[i].key; i++) {
+            if ( 0 == strcmp(open_map[i].key, suffix)) {
+                flag = 1;
+                if (open_map[i].flag) {
+                    sprintf(cmd, "(%s \"%s\" &);exit", open_map[i].value, filename);
+                } else {
+                    sprintf(cmd, "%s \"%s\"", open_map[i].value, filename);
+                }
+                puts(cmd);
+                system(cmd);
+                break;
+            }
+        }
+    }
+
+    // use open_else_map setting if not found in open_map
+    cmd[0] = '\0';
+    if (NULL == suffix || !flag) {
+        for (int i=0; NULL != open_else_map[i].key; i++) {
+            if ( 0 == strcmp(open_else_map[i].key, mine_type)) {
+                if (open_else_map[i].flag) {
+                    sprintf(cmd, "(%s \"%s\" &);exit", open_else_map[i].value, filename);
+                } else {
+                    sprintf(cmd, "%s \"%s\"", open_else_map[i].value, filename);
+                }
+                puts(cmd);
+                system(cmd);
+                break;
+            }
+        }
+    }
+
+    // free
+    free(mine_type);
+    mine_type = NULL;
+    free(filenamebk);
+    filenamebk = NULL;
+
+    return 0;
 }
 
 int magic_exec(const char *filename) {
-    if (filename) {
-        char cmd[MAX_CMD_LENGTH] = "";
-
-        char *filenamebk = NULL;
-        filenamebk = malloc(strlen(filename)+1);
-        if (!filenamebk) {
-            return -1;
-        }
-        strcpy(filenamebk, filename);
-
-        // get base_name, suffix
-        char *base_name = NULL;
-        char *suffix    = NULL;
-        base_name = basename(filenamebk);
-        suffix = strrchr(base_name, '.');
-
-        cmd[0] = '\0';
-        if (NULL != suffix) {
-            for (int i=0; NULL != exec_map[i].key; i++) {
-                if ( 0 == strcmp(exec_map[i].key, suffix)) {
-                    sprintf(cmd, exec_map[i].value, filename);
-                    puts(cmd);
-                    system(cmd);
-                    break;
-                }
-            }
-        } else {
-            for (int i=0; NULL != exec_else_map[i].key; i++) {
-                if ( 0 == strcmp(exec_else_map[i].key, "*")) {
-                    sprintf(cmd, exec_else_map[i].value, filename);
-                    puts(cmd);
-                    system(cmd);
-                    break;
-                }
-            }
-        }
-        
-        // free
-        free(filenamebk);
-        filenamebk = NULL;
-
-        return 0;
+    if (!filename) {
+        return 1;
     }
-    return 1;
+    char cmd[MAX_CMD_LENGTH] = "";
+
+    char *filenamebk = NULL;
+    filenamebk = malloc(strlen(filename)+1);
+    if (!filenamebk) {
+        return -1;
+    }
+    strcpy(filenamebk, filename);
+
+    // get base_name, suffix
+    char *base_name = NULL;
+    char *suffix    = NULL;
+    base_name = basename(filenamebk);
+    suffix = strrchr(base_name, '.');
+
+    cmd[0] = '\0';
+    if (NULL != suffix) {
+        for (int i=0; NULL != exec_map[i].key; i++) {
+            if ( 0 == strcmp(exec_map[i].key, suffix)) {
+                sprintf(cmd, exec_map[i].value, filename);
+                puts(cmd);
+                system(cmd);
+                break;
+            }
+        }
+    } else {
+        for (int i=0; NULL != exec_else_map[i].key; i++) {
+            if ( 0 == strcmp(exec_else_map[i].key, "*")) {
+                sprintf(cmd, exec_else_map[i].value, filename);
+                puts(cmd);
+                system(cmd);
+                break;
+            }
+        }
+    }
+    
+    // free
+    free(filenamebk);
+    filenamebk = NULL;
+
+    return 0;
 }
 
 int magic_cp(const char *filename) {
-    if (filename) {
-        extern const char *cp_opt;
-        char cmd[MAX_CMD_LENGTH] = "";
-
-        char *filenamebk = NULL;
-        filenamebk = malloc(strlen(filename)+1);
-        if (!filenamebk) {
-            return -1;
-        }
-        strcpy(filenamebk, filename);
-
-        char *dir_name  = NULL;
-        dir_name  = dirname(filenamebk);
-
-        cmd[0] = '\0';
-        sprintf(cmd, "cp %s %s %s/", cp_opt, filename, dir_name);
-        printf("%s", cmd);
-        char *new_base_name = NULL;
-        size_t len;
-        getline(&new_base_name, &len, stdin);
-        strcat(cmd, new_base_name);
-
-        // puts(cmd);
-        system(cmd);
-
-        // free
-        free(filenamebk);
-        filenamebk = NULL;
-
-        return 0;
+    if (!filename) {
+        return 1;
     }
-    return 1;
+
+    extern const char *cp_opt;
+    char cmd[MAX_CMD_LENGTH] = "";
+
+    char *filenamebk = NULL;
+    filenamebk = malloc(strlen(filename)+1);
+    if (!filenamebk) {
+        return -1;
+    }
+    strcpy(filenamebk, filename);
+
+    char *dir_name  = NULL;
+    dir_name  = dirname(filenamebk);
+
+    cmd[0] = '\0';
+    sprintf(cmd, "cp %s %s %s/", cp_opt, filename, dir_name);
+    printf("%s", cmd);
+    char *new_base_name = NULL;
+    size_t len;
+    getline(&new_base_name, &len, stdin);
+    strcat(cmd, new_base_name);
+
+    // puts(cmd);
+    system(cmd);
+
+    // free
+    free(filenamebk);
+    filenamebk = NULL;
+
+    return 0;
 }
 
 int magic_mv(const char *filename) {
-    if (filename) {
-        extern const char *mv_opt;
-        char cmd[MAX_CMD_LENGTH] = "";
-        
-        char *filenamebk = NULL;
-        filenamebk = malloc(strlen(filename)+1);
-        if (!filenamebk) {
-            return -1;
-        }
-        strcpy(filenamebk, filename);
-
-        char *dir_name  = NULL;
-        dir_name  = dirname(filenamebk);
-
-        cmd[0] = '\0';
-        sprintf(cmd, "mv %s %s %s/", mv_opt, filename, dir_name);
-        printf("%s", cmd);
-        char *new_base_name = NULL;
-        size_t len;
-        getline(&new_base_name, &len, stdin);
-        strcat(cmd, new_base_name);
-
-        // puts(cmd);
-        system(cmd);
-        
-        // free
-        free(filenamebk);
-        filenamebk = NULL;
-
-        return 0;
+    if (!filename) {
+        return 1;
     }
-    return 1;
+
+    extern const char *mv_opt;
+    char cmd[MAX_CMD_LENGTH] = "";
+    
+    char *filenamebk = NULL;
+    filenamebk = malloc(strlen(filename)+1);
+    if (!filenamebk) {
+        return -1;
+    }
+    strcpy(filenamebk, filename);
+
+    char *dir_name  = NULL;
+    dir_name  = dirname(filenamebk);
+
+    cmd[0] = '\0';
+    sprintf(cmd, "mv %s %s %s/", mv_opt, filename, dir_name);
+    printf("%s", cmd);
+    char *new_base_name = NULL;
+    size_t len;
+    getline(&new_base_name, &len, stdin);
+    strcat(cmd, new_base_name);
+
+    // puts(cmd);
+    system(cmd);
+    
+    // free
+    free(filenamebk);
+    filenamebk = NULL;
+
+    return 0;
 }
 
 int magic_rm(const char *filename) {
-    if (filename) {
-        extern const char *rm_opt;
-        char cmd[MAX_CMD_LENGTH] = "";
-        
-        char *filenamebk = NULL;
-        filenamebk = malloc(strlen(filename)+1);
-        if (!filenamebk) {
-            return -1;
-        }
-        strcpy(filenamebk, filename);
-
-        cmd[0] = '\0';
-        sprintf(cmd, "rm %s \"%s\"", rm_opt, filename);
-
-        puts(cmd);
-        system(cmd);
-
-        // free
-        free(filenamebk);
-        filenamebk = NULL;
-
-        return 0;
+    if (!filename) {
+        return 1;
     }
-    return 1;
+
+    extern const char *rm_opt;
+    char cmd[MAX_CMD_LENGTH] = "";
+    
+    char *filenamebk = NULL;
+    filenamebk = malloc(strlen(filename)+1);
+    if (!filenamebk) {
+        return -1;
+    }
+    strcpy(filenamebk, filename);
+
+    cmd[0] = '\0';
+    sprintf(cmd, "rm %s \"%s\"", rm_opt, filename);
+
+    puts(cmd);
+    system(cmd);
+
+    // free
+    free(filenamebk);
+    filenamebk = NULL;
+
+    return 0;
 }
 
 void help() {
