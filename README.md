@@ -39,7 +39,7 @@ What can `chopin` do when combined with `fd` and `fzf` ?
 [fd]: find a file list -> [fzf]: interactive filter -> [chopin]: open, exec, cp, mv, rm.
 
 ## Best Practice
-- Add following lines to your `~/.zshrc` and try.
+- To use chopin in cli: Add following lines to your `~/.zshrc` and try.
 ```zsh
 # chopin open
 alias chopin-open="chopin -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0|sed 's/ /\\ /g')\""
@@ -72,6 +72,14 @@ bindkey -s '^W' 'chopin-open-wiki\n'
 # chopin open media
 alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0|sed 's/ /\\ /g')\";exit"
 bindkey -s '^A' 'chopin-open-media\n'
+```
+
+- To use chopin in vim
+```vimscript
+""""""
+"""""" chopin
+nnoremap <LEADER>f :!chopin -o "$(fd --type f --hidden --exclude .git . './'\|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0\|sed 's/ /\\ /g')"<CR><CR>
+nnoremap <LEADER>x :!chopin -e "$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql . './'\|fzf --prompt='exec>' --preview 'bat --color=always {}' --select-1 --exit-0\|sed 's/ /\\ /g')"<CR><CR>
 ```
 
 ## Configuration
