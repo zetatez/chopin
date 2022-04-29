@@ -103,7 +103,6 @@ int magic_open(const char *filename) {
         return -1;
     }
 
-    //  sprintf(cmd, "file --dereference --brief --mime-type %s|awk -F / '{print $1\"/*\"}'", filename);
     sprintf(cmd, "file --dereference --brief --mime-type %s", filename);
     ptr = popen(cmd, "r");
     fgets(mime_type, 128, ptr);

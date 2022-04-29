@@ -107,7 +107,7 @@ static const struct KFV open_else_map[] = {
     {"video/x-ms-wmv"                                                            , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
     {"video/x-sgi-moive"                                                         , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
     {"image/bmp"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/gif"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/gif"                                                                 , 1 , "sxiv -a"                  } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/ief"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/jpeg"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/pipeg"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
@@ -170,8 +170,8 @@ static const struct KV exec_else_map[] = {
 };
 
 /* default options for cp, mv, rm */
-static const char *cp_opt           = "-fr"; // recommended "-ir"
-static const char *mv_opt           = "-f" ; // recommended "-i"
-static const char *rm_opt           = "-fr"; // recommended "-ir"
+static const char *cp_opt = "-fr"; // recommended "-ir"
+static const char *mv_opt = "-f" ; // recommended "-i"
+static const char *rm_opt = "-fr"; // recommended "-ir"
 
 
