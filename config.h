@@ -44,8 +44,7 @@ static const struct KFV open_map[] = {
     {NULL    , 0    , NULL               }
 };
 
-/* open rules for rest */
-// file --dereference --brief --mime-type filename
+/* open rules for rest */ // to get mime-type of a file: file --dereference --brief --mime-type filename
 static const struct KFV open_else_map[] = {
     /*mime-type                                                                  , & , application                */
     {"application/epub+zip"                                                      , 1 , "foliate"                  } ,
@@ -134,10 +133,10 @@ static const struct KFV open_else_map[] = {
     {"text/x-c"                                                                  , 0 , "vim"                      } , // vim  , emacs
     {"text/x-c++"                                                                , 0 , "vim"                      } , // vim  , emacs
     {"text/x-java"                                                               , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-makefile"                                                           , 0 , "vim"                      } , // vim  , emacs
     {"text/x-ruby"                                                               , 0 , "vim"                      } , // vim  , emacs
     {"text/x-script.python"                                                      , 0 , "vim"                      } , // vim  , emacs
     {"text/x-tex"                                                                , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-makefile"                                                                , 0 , "vim"                      } , // vim  , emacs
     {"text/xml"                                                                  , 0 , "vim"                      } , // vim  , emacs
     {NULL                                                                        , 0 , NULL                       }
 };
@@ -145,21 +144,21 @@ static const struct KFV open_else_map[] = {
 /* exec rules */
 static const struct KV exec_map[] = {
     /*.ext   , shell scripts                                                                                                                          */
-    {".sh"   , "filename=%s; sh ${filename}"                                                                                                          },
-    {".py"   , "filename=%s; python ${filename}"                                                                                                      },
-    {".jl"   , "filename=%s; julia ${filename}"                                                                                                       },
-    {".tex"  , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex *.aux; xelatex -interaction nonstopmode ${filename}; zathura *.pdf" },
     {".c"    , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
     {".cpp"  , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
     {".go"   , "filename=%s; go run ${filename}"                                                                                                      },
-    {".scala", "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
     {".java" , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
-    {".rs"   , "filename=%s; cargo build && cargo run"                                                                                                },
-    {".rb"   , "filename=%s; ruby ${filename}"                                                                                                        },
-    {".lua"  , "filename=%s; lua ${filename}"                                                                                                         },
+    {".jl"   , "filename=%s; julia ${filename}"                                                                                                       },
     {".js"   , "filename=%s; node ${filename}"                                                                                                        },
-    {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
+    {".lua"  , "filename=%s; lua ${filename}"                                                                                                         },
+    {".py"   , "filename=%s; python ${filename}"                                                                                                      },
+    {".rb"   , "filename=%s; ruby ${filename}"                                                                                                        },
+    {".rs"   , "filename=%s; cargo build && cargo run"                                                                                                },
+    {".scala", "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
+    {".sh"   , "filename=%s; sh ${filename}"                                                                                                          },
     {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           },
+    {".tex"  , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex *.aux; xelatex -interaction nonstopmode ${filename}; zathura *.pdf" },
+    {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
     {NULL    , NULL                                                                                                                                   }
 };
 
