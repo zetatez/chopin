@@ -3,8 +3,8 @@ chopin
 # chopin
 
 ## Dependencies
-- fd
-- fzf
+- [fd](https://github.com/sharkdp/fd)
+- [fzf](https://github.com/junegunn/fzf)
 - vim
 - ...
 
@@ -83,7 +83,7 @@ nnoremap <LEADER>x :!chopin -e "$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go 
 ```
 
 ## Configuration
-see config.def.h
+See [*config.def.h*](https://github.com/zetatez/chopin/blob/main/config.def.h)
 
 ## LICENSE
 

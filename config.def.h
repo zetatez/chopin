@@ -170,8 +170,8 @@ static const struct KV exec_else_map[] = {
 };
 
 /* default options for cp, mv, rm */
-static const char *cp_opt           = "-fr"; // recommended "-ir"
-static const char *mv_opt           = "-f" ; // recommended "-i"
-static const char *rm_opt           = "-fr"; // recommended "-ir"
+static const char *cp_opt = "-fr"; // recommended "-ir"
+static const char *mv_opt = "-f" ; // recommended "-i"
+static const char *rm_opt = "-fr"; // recommended "-ir"
 
 
