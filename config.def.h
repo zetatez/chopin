@@ -21,66 +21,22 @@ struct KV {
 /* open rules */
 static const struct KFV open_map[] = {
     /* .ext  , &    , application        */
-    {".cbr"  , 1    , "zathura"          } ,
-    {".cbz"  , 1    , "zathura"          } ,
     {".djvu" , 1    , "evince"           } ,
     {".epub" , 1    , "foliate"          } ,
     {".mobi" , 1    , "okularr"          } ,
     {".pdf"  , 1    , "zathura"          } ,
     {".doc"  , 1    , "libreoffice"      } ,
-    {".docm" , 1    , "libreoffice"      } ,
     {".docx" , 1    , "libreoffice"      } ,
-    {".dot"  , 1    , "libreoffice"      } ,
-    {".dotx" , 1    , "libreoffice"      } ,
-    {".fodt" , 1    , "libreoffice"      } ,
-    {".odt"  , 1    , "libreoffice"      } ,
-    {".ott"  , 1    , "libreoffice"      } ,
-    {".rtf"  , 1    , "libreoffice"      } ,
-    {".uot"  , 1    , "libreoffice"      } ,
     {".pptx" , 1    , "libreoffice"      } ,
-    {".dbf"  , 1    , "libreoffice"      } ,
-    {".dif"  , 1    , "libreoffice"      } ,
-    {".fods" , 1    , "libreoffice"      } ,
-    {".ods"  , 1    , "libreoffice"      } ,
-    {".ots"  , 1    , "libreoffice"      } ,
-    {".slk"  , 1    , "libreoffice"      } ,
-    {".uos"  , 1    , "libreoffice"      } ,
     {".xls"  , 1    , "libreoffice"      } ,
-    {".xlsm" , 1    , "libreoffice"      } ,
     {".xlsx" , 1    , "libreoffice"      } ,
-    {".xlt"  , 1    , "libreoffice"      } ,
-    {".Z"    , 0    , "atool --list --"  } ,
-    {".a"    , 0    , "atool --list --"  } ,
-    {".ace"  , 0    , "atool --list --"  } ,
-    {".alz"  , 0    , "atool --list --"  } ,
-    {".arc"  , 0    , "atool --list --"  } ,
-    {".arj"  , 0    , "atool --list --"  } ,
-    {".bz"   , 0    , "atool --list --"  } ,
-    {".bz2"  , 0    , "atool --list --"  } ,
-    {".cab"  , 0    , "atool --list --"  } ,
+    {".iso"  , 0    , "atool --list --"  } ,
     {".cpio" , 0    , "atool --list --"  } ,
-    {".deb"  , 0    , "atool --list --"  } ,
+    {".pkg"  , 0    , "atool --list --"  } ,
     {".gz"   , 0    , "atool --list --"  } ,
     {".jar"  , 0    , "atool --list --"  } ,
-    {".lha"  , 0    , "atool --list --"  } ,
-    {".lz"   , 0    , "atool --list --"  } ,
-    {".lzh"  , 0    , "atool --list --"  } ,
-    {".lzma" , 0    , "atool --list --"  } ,
-    {".lzo"  , 0    , "atool --list --"  } ,
-    {".rpm"  , 0    , "atool --list --"  } ,
-    {".rz"   , 0    , "atool --list --"  } ,
-    {".t7z"  , 0    , "atool --list --"  } ,
-    {".tZ"   , 0    , "atool --list --"  } ,
     {".tar"  , 0    , "atool --list --"  } ,
-    {".tbz"  , 0    , "atool --list --"  } ,
-    {".tbz2" , 0    , "atool --list --"  } ,
     {".tgz"  , 0    , "atool --list --"  } ,
-    {".tlz"  , 0    , "atool --list --"  } ,
-    {".txz"  , 0    , "atool --list --"  } ,
-    {".tzo"  , 0    , "atool --list --"  } ,
-    {".war"  , 0    , "atool --list --"  } ,
-    {".xpi"  , 0    , "atool --list --"  } ,
-    {".xz"   , 0    , "atool --list --"  } ,
     {".zip"  , 0    , "atool --list --"  } ,
     {".rar"  , 0    , "unrar -lt -p- --" } ,
     {".7z"   , 0    , "7z l -p- --"      } ,
@@ -89,14 +45,101 @@ static const struct KFV open_map[] = {
 };
 
 /* open rules for rest */
+// file --dereference --brief --mime-type filename
 static const struct KFV open_else_map[] = {
-    /*mine     , &    , application                */
-    {"image/*" , 1    , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5 , ..
-    {"video/*" , 1    , "mpv --geometry=100%x100%" } , // mpv  , vlc   , ...
-    {"audio/*" , 0    , "mpv"                      } , // mpv  , vlc   , ...
-    {"text/*"  , 0    , "vim"                      } , // vim  , emacs ,
-    {"inode/*" , 0    , "vim"                      } , // vim  , emacs , // inode/x-empty
-    {NULL      , 0    , NULL                       }
+    /*mime-type                                                                  , & , application                */
+    {"application/epub+zip"                                                      , 1 , "foliate"                  } ,
+    {"application/json"                                                          , 0 , "vim"                      } ,
+    {"application/json"                                                          , 0 , "vim"                      } ,
+    {"application/msword"                                                        , 1 , "libreoffice"              } ,
+    {"application/ogg"                                                           , 0 , "mpv"                      } ,
+    {"application/pdf"                                                           , 0 , "zathura"                  } ,
+    {"application/vnd.ms-excel"                                                  , 1 , "libreoffice"              } ,
+    {"application/vnd.ms-outlook"                                                , 1 , "libreoffice"              } ,
+    {"application/vnd.ms-powerpoint"                                             , 1 , "libreoffice"              } ,
+    {"application/vnd.ms-project"                                                , 1 , "libreoffice"              } ,
+    {"application/vnd.openxmlformats-officedocument.presentationml.presentation" , 1 , "libreoffice"              } ,
+    {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"         , 1 , "libreoffice"              } ,
+    {"application/vnd.openxmlformats-officedocument.wordprocessingml.document"   , 1 , "libreoffice"              } ,
+    {"application/vnd.visio"                                                     , 1 , "libreoffice"              } ,
+    {"application/x-httpd-php"                                                   , 0 , "vim"                      } ,
+    {"application/x-javascript"                                                  , 0 , "vim"                      } ,
+    {"application/x-latex"                                                       , 0 , "vim"                      } ,
+    {"application/x-sh"                                                          , 0 , "vim"                      } ,
+    {"application/xhtml+xml"                                                     , 0 , "vim"                      } ,
+    {"application/xml"                                                           , 0 , "vim"                      } ,
+    {"application/bz"                                                            , 0 , "atool --list --"          } ,
+    {"application/bz2"                                                           , 0 , "atool --list --"          } ,
+    {"application/rar"                                                           , 0 , "atool --list --"          } ,
+    {"application/x-7z-compressed"                                               , 0 , "atool --list --"          } ,
+    {"application/x-cpio"                                                        , 0 , "atool --list --"          } ,
+    {"application/x-gzip"                                                        , 0 , "atool --list --"          } ,
+    {"application/x-hdf"                                                         , 0 , "atool --list --"          } ,
+    {"application/x-rar"                                                         , 0 , "atool --list --"          } ,
+    {"application/x-rar-compressed"                                              , 0 , "atool --list --"          } ,
+    {"application/x-tar"                                                         , 0 , "atool --list --"          } ,
+    {"application/zip"                                                           , 0 , "atool --list --"          } ,
+    {"audio/3gpp"                                                                , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/3gpp2"                                                               , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/acc"                                                                 , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/midi"                                                                , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/mpeg"                                                                , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/ogg"                                                                 , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/wav"                                                                 , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/wave"                                                                , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/webm"                                                                , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-m4a"                                                               , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-midi"                                                              , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-mpegurl"                                                           , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-msvideo"                                                           , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-pn-wav"                                                            , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-realaudio"                                                         , 0 , "mpv"                      } , // mpv  , vlc
+    {"audio/x-wav"                                                               , 0 , "mpv"                      } , // mpv  , vlc
+    {"video/3gpp"                                                                , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/3gpp2"                                                               , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/mp4"                                                                 , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/ogg"                                                                 , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/quicktime"                                                           , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/webm"                                                                , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/x-flv"                                                               , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/x-m4v"                                                               , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/x-matroska"                                                          , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/x-ms-asf"                                                            , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/x-ms-wmv"                                                            , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"video/x-sgi-moive"                                                         , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
+    {"image/bmp"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/gif"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/ief"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/jpeg"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/pipeg"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/png"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/svg+xml"                                                             , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/tiff"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/webp"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-cmu-raster"                                                        , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-cmx"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-icon"                                                              , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-rgb"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-xbitmap"                                                           , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-xpixmap"                                                           , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/x-xwindowdump"                                                       , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"inode/x-empty"                                                             , 0 , "vim"                      } , // vim  , emacs
+    {"text/calendar"                                                             , 0 , "vim"                      } , // vim  , emacs
+    {"text/css"                                                                  , 0 , "vim"                      } , // vim  , emacs
+    {"text/csv"                                                                  , 0 , "vim"                      } , // vim  , emacs
+    {"text/html"                                                                 , 0 , "vim"                      } , // vim  , emacs
+    {"text/javascript"                                                           , 0 , "vim"                      } , // vim  , emacs
+    {"text/plain"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/troff"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-c"                                                                  , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-c++"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-java"                                                               , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-ruby"                                                               , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-script.python"                                                      , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-tex"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-makefile"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/xml"                                                                  , 0 , "vim"                      } , // vim  , emacs
+    {NULL                                                                        , 0 , NULL                       }
 };
 
 /* exec rules */

@@ -95,21 +95,24 @@ int magic_open(const char *filename) {
     }
     strcpy(filenamebk, filename);
 
-    // get mine type: text/xx, image/xx, video/xx, ... -> text/*, image/*, video/*, ...
+    // get mime type: text/xx, image/xx, video/xx, ... -> text/*, image/*, video/*, ...
     FILE *ptr = NULL;
-    char *mine_type = NULL;
-    mine_type = malloc(128);
-    if (!mine_type) {
+    char *mime_type = NULL;
+    mime_type = malloc(128);
+    if (!mime_type) {
         return -1;
     }
 
-    sprintf(cmd, "file --dereference --brief --mime-type %s|awk -F / '{print $1\"/*\"}'", filename);
+    //  sprintf(cmd, "file --dereference --brief --mime-type %s|awk -F / '{print $1\"/*\"}'", filename);
+    sprintf(cmd, "file --dereference --brief --mime-type %s", filename);
     ptr = popen(cmd, "r");
-    fgets(mine_type, 128, ptr);
+    fgets(mime_type, 128, ptr);
     pclose(ptr);
+    // print mime_type to stdout
+    // fputs(mime_type, stdout);
 
     char *tmp = NULL;
-    if ((tmp = strstr(mine_type, "\n"))) { *tmp = '\0'; }
+    if ((tmp = strstr(mime_type, "\n"))) { *tmp = '\0'; }
 
     // get base_name, dir_name, suffix
     char *base_name = NULL;
@@ -139,7 +142,7 @@ int magic_open(const char *filename) {
     cmd[0] = '\0';
     if (NULL == suffix || !flag) {
         for (int i=0; NULL != open_else_map[i].key; i++) {
-            if ( 0 == strcmp(open_else_map[i].key, mine_type)) {
+            if ( 0 == strcmp(open_else_map[i].key, mime_type)) {
                 if (open_else_map[i].flag) {
                     sprintf(cmd, "(%s \"%s\" &);exit", open_else_map[i].value, filename);
                 } else {
@@ -153,8 +156,8 @@ int magic_open(const char *filename) {
     }
 
     // free
-    free(mine_type);
-    mine_type = NULL;
+    free(mime_type);
+    mime_type = NULL;
     free(filenamebk);
     filenamebk = NULL;
 
