@@ -95,7 +95,7 @@ int magic_open(const char *filename) {
     }
     strcpy(filenamebk, filename);
 
-    // get mime type: text/xx, image/xx, video/xx, ... -> text/*, image/*, video/*, ...
+    // get mime type
     FILE *ptr = NULL;
     char *mime_type = NULL;
     mime_type = malloc(128);
@@ -103,7 +103,7 @@ int magic_open(const char *filename) {
         return -1;
     }
 
-    sprintf(cmd, "file --dereference --brief --mime-type %s", filename);
+    sprintf(cmd, "file --dereference --brief --mime-type \"%s\"", filename);
     ptr = popen(cmd, "r");
     fgets(mime_type, 128, ptr);
     pclose(ptr);
