@@ -49,7 +49,6 @@ static const struct KFV open_else_map[] = {
     /*mime-type                                                                  , & , application                */
     {"application/epub+zip"                                                      , 1 , "foliate"                  } ,
     {"application/json"                                                          , 0 , "vim"                      } ,
-    {"application/json"                                                          , 0 , "vim"                      } ,
     {"application/msword"                                                        , 1 , "libreoffice"              } ,
     {"application/ogg"                                                           , 0 , "mpv"                      } ,
     {"application/pdf"                                                           , 0 , "zathura"                  } ,
