@@ -23,7 +23,7 @@ static const struct KFV open_map[] = {
     /* .ext  , &    , application        */
     {".djvu" , 1    , "evince"           } ,
     {".epub" , 1    , "foliate"          } ,
-    {".mobi" , 1    , "okularr"          } ,
+    {".mobi" , 1    , "okular"           } ,
     {".pdf"  , 1    , "zathura"          } ,
     {".doc"  , 1    , "libreoffice"      } ,
     {".docx" , 1    , "libreoffice"      } ,
@@ -48,7 +48,6 @@ static const struct KFV open_map[] = {
 static const struct KFV open_else_map[] = {
     /*mime-type                                                                  , & , application                */
     {"application/epub+zip"                                                      , 1 , "foliate"                  } ,
-    {"application/json"                                                          , 0 , "vim"                      } ,
     {"application/json"                                                          , 0 , "vim"                      } ,
     {"application/msword"                                                        , 1 , "libreoffice"              } ,
     {"application/ogg"                                                           , 0 , "mpv"                      } ,

@@ -23,7 +23,7 @@ static const struct KFV open_map[] = {
     /* .ext  , &    , application        */
     {".djvu" , 1    , "evince"           } ,
     {".epub" , 1    , "foliate"          } ,
-    {".mobi" , 1    , "okularr"          } ,
+    {".mobi" , 1    , "okular"           } ,
     {".pdf"  , 1    , "zathura"          } ,
     {".doc"  , 1    , "libreoffice"      } ,
     {".docx" , 1    , "libreoffice"      } ,
