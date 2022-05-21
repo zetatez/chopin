@@ -108,6 +108,7 @@ static const struct KFV open_else_map[] = {
     {"image/bmp"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/gif"                                                                 , 1 , "sxiv -a"                  } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/ief"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
+    {"image/jpg"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/jpeg"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/pipeg"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
     {"image/png"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
