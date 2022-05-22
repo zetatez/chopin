@@ -1,4 +1,5 @@
 chopin
+![chopin](https://raw.githubusercontent.com/zetatez/chopin/main/.pics/chopin.gif)
 
 # chopin
 A cli tool that greatly improves your work efficiency.
