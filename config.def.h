@@ -137,6 +137,7 @@ static const struct KFV open_else_map[] = {
     {"text/x-ruby"                                                               , 0 , "vim"                      } , // vim  , emacs
     {"text/x-script.python"                                                      , 0 , "vim"                      } , // vim  , emacs
     {"text/x-tex"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-diff"                                                               , 0 , "vim"                      } , // vim  , emacs
     {"text/xml"                                                                  , 0 , "vim"                      } , // vim  , emacs
     {NULL                                                                        , 0 , NULL                       }
 };
