@@ -10,18 +10,54 @@
 #include <getopt.h>
 #include <libgen.h>
 #include <string.h>
+
+// VERSION is already defined in config.mk
+// #define VERSION                 "1.0"
+
+/* macros */
+#define MAX_CMD_LENGTH          4086
+#define MAX_FIL_LENGTH          2048
+#define LENGTH(X)               (sizeof X / sizeof X[0])
+#define NUM_OPEN_MAP		    (LENGTH(open_map))
+#define NUM_OPEN_MAP_ELSE       (LENGTH(open_map_else))
+#define NUM_EXEC_MAP		    (LENGTH(exec_map))
+#define NUM_EXEC_MAP_ELSE       (LENGTH(exec_map_else))
+#define FREE(X)                 free(X); X=NULL
+
+/* enums */
+enum Action {NOACTION=0,OP,EX,CP,MV,RM};
+
+/* data structure */
+struct KFV {
+    const char *key;
+    bool flag;
+    const char *value;
+};
+
+struct KV {
+    const char *key;
+    const char *value;
+};
+
+/* function declarations */
+int magic_op(const char *file_name);
+int magic_ex(const char *file_name);
+int magic_cp(const char *file_name);
+int magic_mv(const char *file_name);
+int magic_rm(const char *file_name);
+void help();
+void version();
+
+/* variables */
+
+/* configuration, allows nested code to access above variables */
 #include "./config.h"
-#include "./chopin.h"
 
-#define MAX_CMD_LENGTH 4086
-#define MAX_FIL_LENGTH 2048
-enum Action {NOACTION=0,OPEN,EXEC,CP,MV,RM};
-
-int main(int argc, char *argv[]) {
+int
+main(int argc, char *argv[]) {
     enum Action action = NOACTION;
     char *file = NULL;
 
-    // parse args
     struct option longopts[] = {
         { "open"    , no_argument, 0, 'o' },
         { "exec"    , no_argument, 0, 'e' },
@@ -35,8 +71,8 @@ int main(int argc, char *argv[]) {
     int opt = 0;
     while ((opt = getopt_long(argc, argv, ":oecmrhv", longopts, NULL)) != -1) {
         switch(opt) {
-            case 'o': action = OPEN                                                    ; break;
-            case 'e': action = EXEC                                                    ; break;
+            case 'o': action = OP                                                      ; break;
+            case 'e': action = EX                                                      ; break;
             case 'c': action = CP                                                      ; break;
             case 'm': action = MV                                                      ; break;
             case 'r': action = RM                                                      ; break;
@@ -46,27 +82,20 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // get file: fail if file name contains space. you should not use space in your folder name or file name!
     if (optind < argc) {
         do {
             file = argv[optind];
         } while(++optind < argc);
     }
 
-    if (!strlen(file)) {
-        return 0;
-    }
+    if (!strlen(file)) { return 0; }
 
-    // action
     int flag = -1;
     switch (action) {
-        case NOACTION:
-            printf("No action was specified, exit!\n");
-            break;
-        case OPEN:
-            flag = magic_open(file); break;
-        case EXEC:
-            flag = magic_exec(file); break;
+        case OP:
+            flag = magic_op(file); break;
+        case EX:
+            flag = magic_ex(file); break;
         case CP:
             flag = magic_cp(file)  ; break;
         case MV:
@@ -74,61 +103,55 @@ int main(int argc, char *argv[]) {
         case RM:
             flag = magic_rm(file)  ; break;
         default:
-            printf("NO ACTION! exit.\n");
-            break;
+            printf("NO ACTION!\n") ; break;
     }
 
     return (flag == 0) ? EXIT_SUCCESS: EXIT_FAILURE;
 }
 
-int magic_open(const char *filename) {
-    if (!filename) {
-        return 1;
-    }
+/* function implementations */
+int
+magic_op(const char *file_name) {
+    if (!file_name) { return 1; }
 
     char cmd[MAX_CMD_LENGTH] = "";
+    char *file_name_bk = NULL;
 
-    char *filenamebk = NULL;
-    filenamebk = malloc(strlen(filename)+1);
-    if (!filenamebk) {
-        return -1;
-    }
-    strcpy(filenamebk, filename);
+    file_name_bk = malloc(strlen(file_name)+1);
+    if (!file_name_bk) { return -1; }
+
+    strcpy(file_name_bk, file_name);
 
     // get mime type
     FILE *ptr = NULL;
     char *mime_type = NULL;
     mime_type = malloc(128);
-    if (!mime_type) {
-        return -1;
-    }
+    if (!mime_type) { return -1; }
 
-    sprintf(cmd, "file --dereference --brief --mime-type \"%s\"", filename);
+    sprintf(cmd, "file --dereference --brief --mime-type \"%s\"", file_name);
     ptr = popen(cmd, "r");
     fgets(mime_type, 128, ptr);
     pclose(ptr);
-    // print mime_type to stdout
     // fputs(mime_type, stdout);
 
     char *tmp = NULL;
     if ((tmp = strstr(mime_type, "\n"))) { *tmp = '\0'; }
 
-    // get base_name, dir_name, suffix
     char *base_name = NULL;
     char *suffix    = NULL;
-    base_name = basename(filenamebk);
+    base_name = basename(file_name_bk);
     suffix = strrchr(base_name, '.');
 
-    int flag = 0;
     cmd[0] = '\0';
+    int isfind = 0;
     if (NULL != suffix) {
-        for (int i=0; NULL != open_map[i].key; i++) {
+        for (int i=0; i < NUM_OPEN_MAP; i++) {
             if ( 0 == strcmp(open_map[i].key, suffix)) {
-                flag = 1;
+                isfind = 1;
                 if (open_map[i].flag) {
-                    sprintf(cmd, "(%s \"%s\" &);exit", open_map[i].value, filename);
+                    sprintf(cmd, "(%s \"%s\" &);exit", open_map[i].value, file_name);
                 } else {
-                    sprintf(cmd, "%s \"%s\"", open_map[i].value, filename);
+                    sprintf(cmd, "%s \"%s\"", open_map[i].value, file_name);
                 }
                 puts(cmd);
                 system(cmd);
@@ -137,99 +160,90 @@ int magic_open(const char *filename) {
         }
     }
 
-    // use open_else_map setting if not found in open_map
-    cmd[0] = '\0';
-    if (NULL == suffix || !flag) {
-        for (int i=0; NULL != open_else_map[i].key; i++) {
-            if ( 0 == strcmp(open_else_map[i].key, mime_type)) {
-                if (open_else_map[i].flag) {
-                    sprintf(cmd, "(%s \"%s\" &);exit", open_else_map[i].value, filename);
+    if (!isfind) {
+        for (int i=0; i < NUM_OPEN_MAP_ELSE; i++) {
+            if ( 0 == strcmp(open_map_else[i].key, mime_type)) {
+                isfind = 1;
+                if (open_map_else[i].flag) {
+                    sprintf(cmd, "(%s \"%s\" &);exit", open_map_else[i].value, file_name);
                 } else {
-                    sprintf(cmd, "%s \"%s\"", open_else_map[i].value, filename);
+                    sprintf(cmd, "%s \"%s\"", open_map_else[i].value, file_name);
                 }
-                puts(cmd);
-                system(cmd);
+                puts(cmd); system(cmd);
                 break;
             }
         }
     }
 
-    // free
-    free(mime_type);
-    mime_type = NULL;
-    free(filenamebk);
-    filenamebk = NULL;
-
-    return 0;
+    FREE(mime_type);
+    FREE(file_name_bk);
+    return isfind ? EXIT_SUCCESS: EXIT_FAILURE;
 }
 
-int magic_exec(const char *filename) {
-    if (!filename) {
-        return 1;
-    }
+int
+magic_ex(const char *file_name) {
+    if (!file_name) { return 1; }
+
     char cmd[MAX_CMD_LENGTH] = "";
 
-    char *filenamebk = NULL;
-    filenamebk = malloc(strlen(filename)+1);
-    if (!filenamebk) {
+    char *file_name_bk = NULL;
+    file_name_bk = malloc(strlen(file_name)+1);
+    if (!file_name_bk) {
         return -1;
     }
-    strcpy(filenamebk, filename);
+    strcpy(file_name_bk, file_name);
 
     // get base_name, suffix
     char *base_name = NULL;
     char *suffix    = NULL;
-    base_name = basename(filenamebk);
+    base_name = basename(file_name_bk);
     suffix = strrchr(base_name, '.');
 
     cmd[0] = '\0';
+    int isfind = 0;
     if (NULL != suffix) {
-        for (int i=0; NULL != exec_map[i].key; i++) {
+        for (int i=0; i < NUM_EXEC_MAP; i++) {
             if ( 0 == strcmp(exec_map[i].key, suffix)) {
-                sprintf(cmd, exec_map[i].value, filename);
-                puts(cmd);
-                system(cmd);
+                isfind = 1;
+                sprintf(cmd, exec_map[i].value, file_name);
+                puts(cmd); system(cmd);
                 break;
             }
         }
-    } else {
-        for (int i=0; NULL != exec_else_map[i].key; i++) {
-            if ( 0 == strcmp(exec_else_map[i].key, "*")) {
-                sprintf(cmd, exec_else_map[i].value, filename);
-                puts(cmd);
-                system(cmd);
+    }
+
+    if (!isfind) {
+        for (int i=0; NUM_EXEC_MAP_ELSE; i++) {
+            if ( 0 == strcmp(exec_map_else[i].key, "*")) {
+                isfind = 1;
+                sprintf(cmd, exec_map_else[i].value, file_name);
+                puts(cmd); system(cmd);
                 break;
             }
         }
     }
     
-    // free
-    free(filenamebk);
-    filenamebk = NULL;
-
-    return 0;
+    FREE(file_name_bk);
+    return isfind ? EXIT_SUCCESS: EXIT_FAILURE;
 }
 
-int magic_cp(const char *filename) {
-    if (!filename) {
-        return 1;
-    }
+int
+magic_cp(const char *file_name) {
+    if (!file_name) { return 1; }
 
-    extern const char *cp_opt;
     char cmd[MAX_CMD_LENGTH] = "";
+    char *file_name_bk = NULL;
 
-    char *filenamebk = NULL;
-    filenamebk = malloc(strlen(filename)+1);
-    if (!filenamebk) {
-        return -1;
-    }
-    strcpy(filenamebk, filename);
+    file_name_bk = malloc(strlen(file_name)+1);
+    if (!file_name_bk) { return -1; }
+
+    strcpy(file_name_bk, file_name);
 
     char *dir_name  = NULL;
-    dir_name  = dirname(filenamebk);
+    dir_name  = dirname(file_name_bk);
 
     cmd[0] = '\0';
-    sprintf(cmd, "cp %s %s %s/", cp_opt, filename, dir_name);
+    sprintf(cmd, "cp %s %s %s/", cp_opt, file_name, dir_name);
     printf("%s", cmd);
     char *new_base_name = NULL;
     size_t len;
@@ -239,33 +253,27 @@ int magic_cp(const char *filename) {
     // puts(cmd);
     system(cmd);
 
-    // free
-    free(filenamebk);
-    filenamebk = NULL;
-
+    FREE(file_name_bk);
     return 0;
 }
 
-int magic_mv(const char *filename) {
-    if (!filename) {
-        return 1;
-    }
+int
+magic_mv(const char *file_name) {
+    if (!file_name) { return 1; }
 
-    extern const char *mv_opt;
     char cmd[MAX_CMD_LENGTH] = "";
-    
-    char *filenamebk = NULL;
-    filenamebk = malloc(strlen(filename)+1);
-    if (!filenamebk) {
-        return -1;
-    }
-    strcpy(filenamebk, filename);
+    char *file_name_bk = NULL;
+
+    file_name_bk = malloc(strlen(file_name)+1);
+    if (!file_name_bk) { return -1; }
+
+    strcpy(file_name_bk, file_name);
 
     char *dir_name  = NULL;
-    dir_name  = dirname(filenamebk);
+    dir_name  = dirname(file_name_bk);
 
     cmd[0] = '\0';
-    sprintf(cmd, "mv %s %s %s/", mv_opt, filename, dir_name);
+    sprintf(cmd, "mv %s %s %s/", mv_opt, file_name, dir_name);
     printf("%s", cmd);
     char *new_base_name = NULL;
     size_t len;
@@ -275,55 +283,73 @@ int magic_mv(const char *filename) {
     // puts(cmd);
     system(cmd);
     
-    // free
-    free(filenamebk);
-    filenamebk = NULL;
-
+    FREE(file_name_bk);
     return 0;
 }
 
-int magic_rm(const char *filename) {
-    if (!filename) {
+int
+magic_rm(const char *file_name) {
+    if (!file_name) {
         return 1;
     }
 
-    extern const char *rm_opt;
     char cmd[MAX_CMD_LENGTH] = "";
+    char *file_name_bk = NULL;
     
-    char *filenamebk = NULL;
-    filenamebk = malloc(strlen(filename)+1);
-    if (!filenamebk) {
-        return -1;
-    }
-    strcpy(filenamebk, filename);
+    file_name_bk = malloc(strlen(file_name)+1);
+    if (!file_name_bk) { return -1; }
+
+    strcpy(file_name_bk, file_name);
 
     cmd[0] = '\0';
-    sprintf(cmd, "rm %s \"%s\"", rm_opt, filename);
+    sprintf(cmd, "rm %s \"%s\"", rm_opt, file_name);
 
     puts(cmd);
     system(cmd);
 
-    // free
-    free(filenamebk);
-    filenamebk = NULL;
-
+    FREE(file_name_bk);
     return 0;
 }
 
-void help() {
-    fprintf(stderr, "%s", "Usage: chopin [-vhoecmr] [FILE]\n");
-    fprintf(stderr, "%s", "  -o, --open         open a file with your default settings automatically\n");
-    fprintf(stderr, "%s", "  -e, --exec         exec a file with your default settings automatically\n");
-    fprintf(stderr, "%s", "  -c, --cp           cp a file\n");
-    fprintf(stderr, "%s", "  -m, --mv           mv a file\n");
-    fprintf(stderr, "%s", "  -r, --rm           rm a file\n");
-    fprintf(stderr, "%s", "  -h, --help         help\n");
-    fprintf(stderr, "%s", "  -v, --version      version\n");
-    exit(EXIT_FAILURE);
+void
+help() {
+    char * helpstr = "\
+    NAME\n\
+        chopin - A cli tool that greatly improves your work efficiency.\n\
+    \n\
+    SYNOPSIS\n\
+        chopin [-vhoecmr] file\n\
+    \n\
+    DESCRIPTION\n\
+        chopin is a tool for cli to open, exec, cp, mv, rm file automatically.\n\
+    \n\
+    OPTIONS\n\
+        -v     prints version information to cli and exit.\n\
+    \n\
+        -o     open a file with your default settings automatically.\n\
+    \n\
+        -e     exec a script with your default settings automatically.\n\
+    \n\
+        -c     cp a file.\n\
+    \n\
+        -m     mv a file.\n\
+    \n\
+        -r     rm a file.\n\
+    \n\
+    CUSTOMIZATION\n\
+        chopin is customized by creating a custom config.h and recompiling the source code. This keeps it fast, secure and simple.\n\
+    \n\
+    BUGS\n\
+        Send all bug reports with a patch to zetatez@icloud.com. \n\
+    \n";
+
+    printf(helpstr);
+    exit(EXIT_SUCCESS);
 }
 
-void version() {
-    printf("chopin-1.0\n");
+void
+version() {
+    printf("chopin-%s\n", VERSION);
     exit(EXIT_SUCCESS);
 }
 

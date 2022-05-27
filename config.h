@@ -4,20 +4,6 @@
 /* Author: lorenzo */
 /* E-mail: lorenzo<zetatez@icloud.com> */
 
-#include <stdbool.h>
-#include <stdlib.h>
-
-struct KFV {
-    const char *key;
-    bool flag;
-    const char *value;
-};
-
-struct KV {
-    const char *key;
-    const char *value;
-};
-
 /* open rules */
 static const struct KFV open_map[] = {
     /* .ext  , &    , application        */
@@ -40,12 +26,10 @@ static const struct KFV open_map[] = {
     {".zip"  , 0    , "atool --list --"  } ,
     {".rar"  , 0    , "unrar -lt -p- --" } ,
     {".7z"   , 0    , "7z l -p- --"      } ,
-    {".json" , 0    , "vim"              } ,
-    {NULL    , 0    , NULL               }
 };
 
-/* open rules for rest */ // to get mime-type of a file: file --dereference --brief --mime-type filename
-static const struct KFV open_else_map[] = {
+/* open rules for rest */ // Note: to get mime-type of a file: file --dereference --brief --mime-type file_name
+static const struct KFV open_map_else[] = {
     /*mime-type                                                                  , & , application                */
     {"application/epub+zip"                                                      , 0 , "foliate"                  } ,
     {"application/json"                                                          , 0 , "vim"                      } ,
@@ -77,97 +61,95 @@ static const struct KFV open_else_map[] = {
     {"application/x-rar-compressed"                                              , 0 , "atool --list --"          } ,
     {"application/x-tar"                                                         , 0 , "atool --list --"          } ,
     {"application/zip"                                                           , 0 , "atool --list --"          } ,
-    {"audio/3gpp"                                                                , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/3gpp2"                                                               , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/acc"                                                                 , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/midi"                                                                , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/mpeg"                                                                , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/ogg"                                                                 , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/wav"                                                                 , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/wave"                                                                , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/webm"                                                                , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-m4a"                                                               , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-midi"                                                              , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-mpegurl"                                                           , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-msvideo"                                                           , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-pn-wav"                                                            , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-realaudio"                                                         , 0 , "mpv"                      } , // mpv  , vlc
-    {"audio/x-wav"                                                               , 0 , "mpv"                      } , // mpv  , vlc
-    {"video/3gpp"                                                                , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/3gpp2"                                                               , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/mp4"                                                                 , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/ogg"                                                                 , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/quicktime"                                                           , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/webm"                                                                , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/x-flv"                                                               , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/x-m4v"                                                               , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/x-matroska"                                                          , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/x-ms-asf"                                                            , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/x-ms-wmv"                                                            , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"video/x-sgi-moive"                                                         , 1 , "mpv --geometry=100%x100%" } , // mpv  , vlc
-    {"image/bmp"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/gif"                                                                 , 1 , "sxiv -a"                  } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/ief"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/jpg"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/jpeg"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/pipeg"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/png"                                                                 , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/svg+xml"                                                             , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/tiff"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/webp"                                                                , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-cmu-raster"                                                        , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-cmx"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-icon"                                                              , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-rgb"                                                               , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-xbitmap"                                                           , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-xpixmap"                                                           , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"image/x-xwindowdump"                                                       , 1 , "sxiv"                     } , // sxiv , feh   , img2txt --gamma=0.5
-    {"inode/x-empty"                                                             , 0 , "vim"                      } , // vim  , emacs
-    {"text/calendar"                                                             , 0 , "vim"                      } , // vim  , emacs
-    {"text/css"                                                                  , 0 , "vim"                      } , // vim  , emacs
-    {"text/csv"                                                                  , 0 , "vim"                      } , // vim  , emacs
-    {"text/html"                                                                 , 0 , "vim"                      } , // vim  , emacs
-    {"text/javascript"                                                           , 0 , "vim"                      } , // vim  , emacs
-    {"text/plain"                                                                , 0 , "vim"                      } , // vim  , emacs
-    {"text/troff"                                                                , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-c"                                                                  , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-c++"                                                                , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-java"                                                               , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-makefile"                                                           , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-ruby"                                                               , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-script.python"                                                      , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-tex"                                                                , 0 , "vim"                      } , // vim  , emacs
-    {"text/x-diff"                                                               , 0 , "vim"                      } , // vim  , emacs
-    {"text/xml"                                                                  , 0 , "vim"                      } , // vim  , emacs
-    {NULL                                                                        , 0 , NULL                       }
+    {"audio/3gpp"                                                                , 0 , "mpv"                      } ,
+    {"audio/3gpp2"                                                               , 0 , "mpv"                      } ,
+    {"audio/acc"                                                                 , 0 , "mpv"                      } ,
+    {"audio/midi"                                                                , 0 , "mpv"                      } ,
+    {"audio/mpeg"                                                                , 0 , "mpv"                      } ,
+    {"audio/ogg"                                                                 , 0 , "mpv"                      } ,
+    {"audio/wav"                                                                 , 0 , "mpv"                      } ,
+    {"audio/wave"                                                                , 0 , "mpv"                      } ,
+    {"audio/webm"                                                                , 0 , "mpv"                      } ,
+    {"audio/x-m4a"                                                               , 0 , "mpv"                      } ,
+    {"audio/x-midi"                                                              , 0 , "mpv"                      } ,
+    {"audio/x-mpegurl"                                                           , 0 , "mpv"                      } ,
+    {"audio/x-msvideo"                                                           , 0 , "mpv"                      } ,
+    {"audio/x-pn-wav"                                                            , 0 , "mpv"                      } ,
+    {"audio/x-realaudio"                                                         , 0 , "mpv"                      } ,
+    {"audio/x-wav"                                                               , 0 , "mpv"                      } ,
+    {"video/3gpp"                                                                , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/3gpp2"                                                               , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/mp4"                                                                 , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/ogg"                                                                 , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/quicktime"                                                           , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/webm"                                                                , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/x-flv"                                                               , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/x-m4v"                                                               , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/x-matroska"                                                          , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/x-ms-asf"                                                            , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/x-ms-wmv"                                                            , 1 , "mpv --geometry=100%x100%" } ,
+    {"video/x-sgi-moive"                                                         , 1 , "mpv --geometry=100%x100%" } ,
+    {"image/bmp"                                                                 , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/gif"                                                                 , 1 , "sxiv -a"                  } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/ief"                                                                 , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/jpg"                                                                 , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/jpeg"                                                                , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/pipeg"                                                               , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/png"                                                                 , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/svg+xml"                                                             , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/tiff"                                                                , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/webp"                                                                , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-cmu-raster"                                                        , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-cmx"                                                               , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-icon"                                                              , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-rgb"                                                               , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-xbitmap"                                                           , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-xpixmap"                                                           , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-xwindowdump"                                                       , 1 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"inode/x-empty"                                                             , 0 , "vim"                      } ,
+    {"text/calendar"                                                             , 0 , "vim"                      } ,
+    {"text/css"                                                                  , 0 , "vim"                      } ,
+    {"text/csv"                                                                  , 0 , "vim"                      } ,
+    {"text/html"                                                                 , 0 , "vim"                      } ,
+    {"text/javascript"                                                           , 0 , "vim"                      } ,
+    {"text/plain"                                                                , 0 , "vim"                      } ,
+    {"text/troff"                                                                , 0 , "vim"                      } ,
+    {"text/x-shellscript"                                                        , 0 , "vim"                      } ,
+    {"text/x-c"                                                                  , 0 , "vim"                      } ,
+    {"text/x-c++"                                                                , 0 , "vim"                      } ,
+    {"text/x-java"                                                               , 0 , "vim"                      } ,
+    {"text/x-makefile"                                                           , 0 , "vim"                      } ,
+    {"text/x-ruby"                                                               , 0 , "vim"                      } ,
+    {"text/x-script.python"                                                      , 0 , "vim"                      } ,
+    {"text/x-tex"                                                                , 0 , "vim"                      } ,
+    {"text/x-diff"                                                               , 0 , "vim"                      } ,
+    {"text/xml"                                                                  , 0 , "vim"                      } ,
 };
 
 /* exec rules */
 static const struct KV exec_map[] = {
-    /*.ext   , shell scripts                                                                                                                          */
-    {".c"    , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
-    {".cpp"  , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
-    {".go"   , "filename=%s; go run ${filename}"                                                                                                      },
-    {".java" , "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
-    {".jl"   , "filename=%s; julia ${filename}"                                                                                                       },
-    {".js"   , "filename=%s; node ${filename}"                                                                                                        },
-    {".lua"  , "filename=%s; lua ${filename}"                                                                                                         },
-    {".py"   , "filename=%s; python ${filename}"                                                                                                      },
-    {".rb"   , "filename=%s; ruby ${filename}"                                                                                                        },
-    {".rs"   , "filename=%s; cargo build && cargo run"                                                                                                },
-    {".scala", "filename=%s; cd ${filename%.*}; sh build.sh"                                                                                          },
-    {".sh"   , "filename=%s; sh ${filename}"                                                                                                          },
-    {".sql"  , "filename=%s; mysql -uroot -p < ${filename}"                                                                                           },
-    {".tex"  , "filename=%s; xelatex -interaction nonstopmode ${filename}; bibtex *.aux; xelatex -interaction nonstopmode ${filename}; zathura *.pdf" },
-    {".ts"   , "filename=%s; tsc ${filename}"                                                                                                         },
-    {NULL    , NULL                                                                                                                                   }
+    /*.ext   , shell scripts                                                                                                                            */
+    {".c"    , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {".cpp"  , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {".go"   , "file_name=%s; go run ${file_name}"                                                                                                       },
+    {".java" , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {".jl"   , "file_name=%s; julia ${file_name}"                                                                                                        },
+    {".js"   , "file_name=%s; node ${file_name}"                                                                                                         },
+    {".lua"  , "file_name=%s; lua ${file_name}"                                                                                                          },
+    {".py"   , "file_name=%s; python ${file_name}"                                                                                                       },
+    {".rb"   , "file_name=%s; ruby ${file_name}"                                                                                                         },
+    {".rs"   , "file_name=%s; cargo build && cargo run"                                                                                                  },
+    {".scala", "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {".sh"   , "file_name=%s; sh ${file_name}"                                                                                                           },
+    {".sql"  , "file_name=%s; mysql -uroot -p < ${file_name}"                                                                                            },
+    {".tex"  , "file_name=%s; xelatex -interaction nonstopmode ${file_name}; bibtex *.aux; xelatex -interaction nonstopmode ${file_name}; zathura *.pdf" },
+    {".ts"   , "file_name=%s; tsc ${file_name}"                                                                                                          },
 };
 
 /* exec rules for rest */
-static const struct KV exec_else_map[] = {
+static const struct KV exec_map_else[] = {
     /**   , shell scripts                  */
-    {"*"  , "filename=%s; sh ${filename }" }, // any excuteble file
-    {NULL , NULL                           }
+    {"*"  , "file_name=%s; sh ${file_name }" }, // any excuteble file
 };
 
 /* default options for cp, mv, rm */
