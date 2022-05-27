@@ -47,7 +47,7 @@ static const struct KFV open_map[] = {
 /* open rules for rest */ // to get mime-type of a file: file --dereference --brief --mime-type filename
 static const struct KFV open_else_map[] = {
     /*mime-type                                                                  , & , application                */
-    {"application/epub+zip"                                                      , 1 , "foliate"                  } ,
+    {"application/epub+zip"                                                      , 0 , "foliate"                  } ,
     {"application/json"                                                          , 0 , "vim"                      } ,
     {"application/msword"                                                        , 1 , "libreoffice"              } ,
     {"application/ogg"                                                           , 0 , "mpv"                      } ,
@@ -137,6 +137,7 @@ static const struct KFV open_else_map[] = {
     {"text/x-ruby"                                                               , 0 , "vim"                      } , // vim  , emacs
     {"text/x-script.python"                                                      , 0 , "vim"                      } , // vim  , emacs
     {"text/x-tex"                                                                , 0 , "vim"                      } , // vim  , emacs
+    {"text/x-diff"                                                               , 0 , "vim"                      } , // vim  , emacs
     {"text/xml"                                                                  , 0 , "vim"                      } , // vim  , emacs
     {NULL                                                                        , 0 , NULL                       }
 };
