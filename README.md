@@ -54,76 +54,63 @@ chopin --help
     ```
 
 - To use chopin in zsh: `~/.zshrc`.
-```zsh
-# chopin
-# chopin open
-alias chopin-open="chopin -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bindkey -s '^F' 'chopin-open\n'
+    - If you are a dwm user and you have patched the dwm swallow patch
+    ```zsh
+    # chopin
+    # chopin open
+    alias chopin-open="chopin -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s '^F' 'chopin-open\n'
+    # chopin exec
+    alias chopin-exec="chopin -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . './'|fzf --prompt='exec>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s '^X' 'chopin-exec\n'
+    # chopin cp
+    alias chopin-cp="chopin -c \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='cp>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s "^N" 'chopin-cp\n'
+    # chopin mv
+    alias chopin-mv="chopin -m \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='mv>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s "^V" 'chopin-mv\n'
+    # chopin rm
+    alias chopin-rm="chopin -r \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rm>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s "^Z" 'chopin-rm\n'
+    # chopin open wiki
+    alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/obsidian/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s '^W' 'chopin-open-wiki\n'
+    # chopin open books
+    alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude .git . '$HOME/obsidian/docs'|fzf --prompt='books>' --reverse --select-1 --exit-0)\""
+    bindkey -s '^P' 'chopin-open-book\n'
+    # chopin open media
+    alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0)\""
+    bindkey -s '^A' 'chopin-open-media\n'
+    ```
 
-# chopin exec
-alias chopin-exec="chopin -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . './'|fzf --prompt='exec>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bindkey -s '^X' 'chopin-exec\n'
-
-# chopin cp
-alias chopin-cp="chopin -c \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='cp>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bindkey -s "^N" 'chopin-cp\n'
-
-# chopin mv
-alias chopin-mv="chopin -m \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='mv>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bindkey -s "^V" 'chopin-mv\n'
-
-# chopin rm
-alias chopin-rm="chopin -r \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rm>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bindkey -s "^Z" 'chopin-rm\n'
-
-# chopin open wiki
-alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/obsidian/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bindkey -s '^W' 'chopin-open-wiki\n'
-
-# chopin open books
-alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude .git . '$HOME/obsidian/docs'|fzf --prompt='books>' --reverse --select-1 --exit-0)\";exit"
-bindkey -s '^P' 'chopin-open-book\n'
-
-# chopin open media
-alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0)\";exit"
-bindkey -s '^A' 'chopin-open-media\n'
-```
-
-- To use chopin in bash: `~/.bashrc`.
-```bash
-# chopin
-# chopin open
-alias chopin-open="chopin -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bind -x '"\C-f":"chopin-open"'
-
-# chopin exec
-alias chopin-exec="chopin -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . './'|fzf --prompt='exec>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bind -x '"\C-x":"chopin-exec"'
-
-# chopin cp
-alias chopin-cp="chopin -c \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='cp>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bind -x '"\C-n":"chopin-cp"'
-
-# chopin mv
-alias chopin-mv="chopin -m \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='mv>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bind -x '"\C-v":"chopin-mv"'
-
-# chopin rm
-alias chopin-rm="chopin -r \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rm>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bind -x '"\C-z":"chopin-rm"'
-
-# chopin open wiki
-alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/obsidian/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
-bind -x '"\C-w":"chopin-open-wiki"'
-
-# chopin open books
-alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude ~/go . '$HOME/obsidian/docs'|fzf --prompt='books>' --reverse --select-1 --exit-0)\";exit"
-bind -x '"\C-p":"chopin-open-book"'
-
-# chopin open media
-alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0)\";exit"
-bind -x '"\C-a":"chopin-open-media"'
-```
+    - Otherwise, you should use
+    ```zsh
+    # chopin
+    # chopin open
+    alias chopin-open="chopin -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s '^F' 'chopin-open\n'
+    # chopin exec
+    alias chopin-exec="chopin -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . './'|fzf --prompt='exec>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s '^X' 'chopin-exec\n'
+    # chopin cp
+    alias chopin-cp="chopin -c \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='cp>'  --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s "^N" 'chopin-cp\n'
+    # chopin mv
+    alias chopin-mv="chopin -m \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='mv>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s "^V" 'chopin-mv\n'
+    # chopin rm
+    alias chopin-rm="chopin -r \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rm>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s "^Z" 'chopin-rm\n'
+    # chopin open wiki
+    alias chopin-open-wiki="chopin -o \"\$(fd --type f --hidden --exclude .git . '$HOME/obsidian/wiki'|fzf --prompt='wikis>' --preview 'bat --color=always {}' --select-1 --exit-0)\""
+    bindkey -s '^W' 'chopin-open-wiki\n'
+    # chopin open books
+    alias chopin-open-book="chopin -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude .git . '$HOME/obsidian/docs'|fzf --prompt='books>' --reverse --select-1 --exit-0)\";exit"
+    bindkey -s '^P' 'chopin-open-book\n'
+    # chopin open media
+    alias chopin-open-media="chopin -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '$HOME'|fzf --prompt='medias>' --reverse --select-1 --exit-0)\";exit"
+    bindkey -s '^A' 'chopin-open-media\n'
+    ```
 
 - To use chopin in vim: `~/.vimrc`.
 ```vimscript
