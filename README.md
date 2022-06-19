@@ -2,7 +2,7 @@ chopin
 ![chopin](https://raw.githubusercontent.com/zetatez/chopin/main/.pics/chopin.gif)
 
 # chopin
-A cli tool that greatly improves your work efficiency.
+A cli tool that will greatly improve your working efficiency.
 
 ## Dependencies
 - [fd](https://github.com/sharkdp/fd)
