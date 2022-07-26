@@ -7,35 +7,48 @@
 /* open rules */
 static const struct KFV open_map[] = {
     /* .ext  , &    , application        */
-    {".djvu" , 0    , "evince"           } ,
-    {".epub" , 0    , "foliate"          } ,
-    {".mobi" , 0    , "okular"           } ,
+    {".md"   , 0    , "vim"              } ,
     {".pdf"  , 0    , "zathura"          } ,
     {".doc"  , 0    , "libreoffice"      } ,
     {".docx" , 0    , "libreoffice"      } ,
     {".pptx" , 0    , "libreoffice"      } ,
     {".xls"  , 0    , "libreoffice"      } ,
     {".xlsx" , 0    , "libreoffice"      } ,
-    {".iso"  , 0    , "atool --list --"  } ,
-    {".cpio" , 0    , "atool --list --"  } ,
-    {".pkg"  , 0    , "atool --list --"  } ,
-    {".gz"   , 0    , "atool --list --"  } ,
-    {".jar"  , 0    , "atool --list --"  } ,
     {".tar"  , 0    , "atool --list --"  } ,
-    {".tgz"  , 0    , "atool --list --"  } ,
-    {".zip"  , 0    , "atool --list --"  } ,
-    {".rar"  , 0    , "unrar -lt -p- --" } ,
-    {".7z"   , 0    , "7z l -p- --"      } ,
+    {".gz"   , 0    , "atool --list --"  } ,
 };
 
 /* open rules for rest */ // Note: to get mime-type of a file: file --dereference --brief --mime-type file_name
 static const struct KFV open_map_else[] = {
     /*mime-type                                                                  , & , application                */
-    {"application/epub+zip"                                                      , 0 , "foliate"                  } ,
+    {"inode/x-empty"                                                             , 0 , "vim"                      } ,
+    {"text/calendar"                                                             , 0 , "vim"                      } ,
+    {"text/css"                                                                  , 0 , "vim"                      } ,
+    {"text/csv"                                                                  , 0 , "vim"                      } ,
+    {"text/html"                                                                 , 0 , "vim"                      } ,
+    {"text/javascript"                                                           , 0 , "vim"                      } ,
+    {"text/plain"                                                                , 0 , "vim"                      } ,
+    {"text/troff"                                                                , 0 , "vim"                      } ,
+    {"text/x-shellscript"                                                        , 0 , "vim"                      } ,
+    {"text/x-c"                                                                  , 0 , "vim"                      } ,
+    {"text/x-c++"                                                                , 0 , "vim"                      } ,
+    {"text/x-java"                                                               , 0 , "vim"                      } ,
+    {"text/x-makefile"                                                           , 0 , "vim"                      } ,
+    {"text/x-ruby"                                                               , 0 , "vim"                      } ,
+    {"text/x-script.python"                                                      , 0 , "vim"                      } ,
+    {"text/x-tex"                                                                , 0 , "vim"                      } ,
+    {"text/x-diff"                                                               , 0 , "vim"                      } ,
+    {"text/xml"                                                                  , 0 , "vim"                      } ,
+    {"application/x-httpd-php"                                                   , 0 , "vim"                      } ,
+    {"application/x-javascript"                                                  , 0 , "vim"                      } ,
+    {"application/x-latex"                                                       , 0 , "vim"                      } ,
+    {"application/x-sh"                                                          , 0 , "vim"                      } ,
+    {"application/xhtml+xml"                                                     , 0 , "vim"                      } ,
+    {"application/xml"                                                           , 0 , "vim"                      } ,
     {"application/json"                                                          , 0 , "vim"                      } ,
-    {"application/msword"                                                        , 0 , "libreoffice"              } ,
-    {"application/ogg"                                                           , 0 , "mpv"                      } ,
     {"application/pdf"                                                           , 0 , "zathura"                  } ,
+    {"application/epub+zip"                                                      , 0 , "foliate"                  } ,
+    {"application/msword"                                                        , 0 , "libreoffice"              } ,
     {"application/vnd.ms-excel"                                                  , 0 , "libreoffice"              } ,
     {"application/vnd.ms-outlook"                                                , 0 , "libreoffice"              } ,
     {"application/vnd.ms-powerpoint"                                             , 0 , "libreoffice"              } ,
@@ -44,23 +57,24 @@ static const struct KFV open_map_else[] = {
     {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"         , 0 , "libreoffice"              } ,
     {"application/vnd.openxmlformats-officedocument.wordprocessingml.document"   , 0 , "libreoffice"              } ,
     {"application/vnd.visio"                                                     , 0 , "libreoffice"              } ,
-    {"application/x-httpd-php"                                                   , 0 , "vim"                      } ,
-    {"application/x-javascript"                                                  , 0 , "vim"                      } ,
-    {"application/x-latex"                                                       , 0 , "vim"                      } ,
-    {"application/x-sh"                                                          , 0 , "vim"                      } ,
-    {"application/xhtml+xml"                                                     , 0 , "vim"                      } ,
-    {"application/xml"                                                           , 0 , "vim"                      } ,
-    {"application/bz"                                                            , 0 , "atool --list --"          } ,
-    {"application/bz2"                                                           , 0 , "atool --list --"          } ,
-    {"application/rar"                                                           , 0 , "atool --list --"          } ,
-    {"application/x-7z-compressed"                                               , 0 , "atool --list --"          } ,
-    {"application/x-cpio"                                                        , 0 , "atool --list --"          } ,
-    {"application/x-gzip"                                                        , 0 , "atool --list --"          } ,
-    {"application/x-hdf"                                                         , 0 , "atool --list --"          } ,
-    {"application/x-rar"                                                         , 0 , "atool --list --"          } ,
-    {"application/x-rar-compressed"                                              , 0 , "atool --list --"          } ,
-    {"application/x-tar"                                                         , 0 , "atool --list --"          } ,
-    {"application/zip"                                                           , 0 , "atool --list --"          } ,
+    {"image/bmp"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/gif"                                                                 , 0 , "sxiv -a"                  } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/ief"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/jpg"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/jpeg"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/pipeg"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/png"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/svg+xml"                                                             , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/tiff"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/webp"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-cmu-raster"                                                        , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-cmx"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-icon"                                                              , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-rgb"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-xbitmap"                                                           , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-xpixmap"                                                           , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"image/x-xwindowdump"                                                       , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
+    {"application/ogg"                                                           , 0 , "mpv"                      } ,
     {"audio/3gpp"                                                                , 0 , "mpv"                      } ,
     {"audio/3gpp2"                                                               , 0 , "mpv"                      } ,
     {"audio/acc"                                                                 , 0 , "mpv"                      } ,
@@ -89,41 +103,17 @@ static const struct KFV open_map_else[] = {
     {"video/x-ms-asf"                                                            , 0 , "mpv --geometry=100%x100%" } ,
     {"video/x-ms-wmv"                                                            , 0 , "mpv --geometry=100%x100%" } ,
     {"video/x-sgi-moive"                                                         , 0 , "mpv --geometry=100%x100%" } ,
-    {"image/bmp"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/gif"                                                                 , 0 , "sxiv -a"                  } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/ief"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/jpg"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/jpeg"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/pipeg"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/png"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/svg+xml"                                                             , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/tiff"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/webp"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-cmu-raster"                                                        , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-cmx"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-icon"                                                              , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-rgb"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-xbitmap"                                                           , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-xpixmap"                                                           , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-xwindowdump"                                                       , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"inode/x-empty"                                                             , 0 , "vim"                      } ,
-    {"text/calendar"                                                             , 0 , "vim"                      } ,
-    {"text/css"                                                                  , 0 , "vim"                      } ,
-    {"text/csv"                                                                  , 0 , "vim"                      } ,
-    {"text/html"                                                                 , 0 , "vim"                      } ,
-    {"text/javascript"                                                           , 0 , "vim"                      } ,
-    {"text/plain"                                                                , 0 , "vim"                      } ,
-    {"text/troff"                                                                , 0 , "vim"                      } ,
-    {"text/x-shellscript"                                                        , 0 , "vim"                      } ,
-    {"text/x-c"                                                                  , 0 , "vim"                      } ,
-    {"text/x-c++"                                                                , 0 , "vim"                      } ,
-    {"text/x-java"                                                               , 0 , "vim"                      } ,
-    {"text/x-makefile"                                                           , 0 , "vim"                      } ,
-    {"text/x-ruby"                                                               , 0 , "vim"                      } ,
-    {"text/x-script.python"                                                      , 0 , "vim"                      } ,
-    {"text/x-tex"                                                                , 0 , "vim"                      } ,
-    {"text/x-diff"                                                               , 0 , "vim"                      } ,
-    {"text/xml"                                                                  , 0 , "vim"                      } ,
+    {"application/bz"                                                            , 0 , "atool --list --"          } ,
+    {"application/bz2"                                                           , 0 , "atool --list --"          } ,
+    {"application/rar"                                                           , 0 , "atool --list --"          } ,
+    {"application/x-7z-compressed"                                               , 0 , "atool --list --"          } ,
+    {"application/x-cpio"                                                        , 0 , "atool --list --"          } ,
+    {"application/x-gzip"                                                        , 0 , "atool --list --"          } ,
+    {"application/x-hdf"                                                         , 0 , "atool --list --"          } ,
+    {"application/x-rar"                                                         , 0 , "atool --list --"          } ,
+    {"application/x-rar-compressed"                                              , 0 , "atool --list --"          } ,
+    {"application/x-tar"                                                         , 0 , "atool --list --"          } ,
+    {"application/zip"                                                           , 0 , "atool --list --"          } ,
 };
 
 /* exec rules */
@@ -156,5 +146,3 @@ static const struct KV exec_map_else[] = {
 static const char *cp_opt = "-fr"; // recommended "-ir"
 static const char *mv_opt = "-f" ; // recommended "-i"
 static const char *rm_opt = "-fr"; // recommended "-ir"
-
-
