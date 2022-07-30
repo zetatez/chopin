@@ -4,145 +4,86 @@
 /* Author: lorenzo */
 /* E-mail: lorenzo<zetatez@icloud.com> */
 
-/* open rules */
-static const struct KFV open_map[] = {
-    /* .ext  , &    , application        */
-    {".md"   , 0    , "vim"              } ,
-    {".pdf"  , 0    , "zathura"          } ,
-    {".doc"  , 0    , "libreoffice"      } ,
-    {".docx" , 0    , "libreoffice"      } ,
-    {".pptx" , 0    , "libreoffice"      } ,
-    {".xls"  , 0    , "libreoffice"      } ,
-    {".xlsx" , 0    , "libreoffice"      } ,
-    {".tar"  , 0    , "atool --list --"  } ,
-    {".gz"   , 0    , "atool --list --"  } ,
+static const struct OpenRule open_rules[] = {
+    {"inode/x-empty"                                                             ,"vim"                      ,0},
+    {"text/plain"                                                                ,"vim"                      ,0},
+    {"application/pdf"                                                           ,"zathura"                  ,0},
+    {"application/epub+zip"                                                      ,"foliate"                  ,0},
+    {"application/json"                                                          ,"vim"                      ,0},
+    {"text/x-shellscript"                                                        ,"vim"                      ,0},
+    {"text/x-c"                                                                  ,"vim"                      ,0},
+    {"text/x-c++"                                                                ,"vim"                      ,0},
+    {"text/x-java"                                                               ,"vim"                      ,0},
+    {"text/x-makefile"                                                           ,"vim"                      ,0},
+    {"text/x-ruby"                                                               ,"vim"                      ,0},
+    {"text/x-script.python"                                                      ,"vim"                      ,0},
+    {"text/x-tex"                                                                ,"vim"                      ,0},
+    {"text/x-diff"                                                               ,"vim"                      ,0},
+    {"text/csv"                                                                  ,"vim"                      ,0},
+    {"text/html"                                                                 ,"vim"                      ,0},
+    {"text/javascript"                                                           ,"vim"                      ,0},
+    {"text/troff"                                                                ,"vim"                      ,0},
+    {"text/xml"                                                                  ,"vim"                      ,0},
+    {"text/css"                                                                  ,"vim"                      ,0},
+    /* {"text/calendar"                                                             ,"vim"                      ,0}, */
+    {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"         ,"libreoffice"              ,0},
+    {"application/vnd.openxmlformats-officedocument.wordprocessingml.document"   ,"libreoffice"              ,0},
+    {"application/vnd.openxmlformats-officedocument.presentationml.presentation" ,"libreoffice"              ,0},
+    {"application/msword"                                                        ,"libreoffice"              ,0},
+    {"application/vnd.ms-excel"                                                  ,"libreoffice"              ,0},
+    {"application/vnd.ms-outlook"                                                ,"libreoffice"              ,0},
+    {"application/vnd.ms-powerpoint"                                             ,"libreoffice"              ,0},
+    /* {"application/vnd.ms-project"                                                ,"libreoffice"              ,0}, */
+    /* {"application/vnd.visio"                                                     ,"libreoffice"              ,0}, */
+    /* {"application/x-httpd-php"                                                   ,"vim"                      ,0}, */
+    {"application/x-javascript"                                                  ,"vim"                      ,0},
+    {"application/x-sh"                                                          ,"vim"                      ,0},
+    {"application/x-latex"                                                       ,"vim"                      ,0},
+    {"application/xml"                                                           ,"vim"                      ,0},
+    {"application/xhtml+xml"                                                     ,"vim"                      ,0},
+    {"image/jpg"                                                                 ,"sxiv"                     ,0}, // jpg    // sxiv, feh, img2txt --gamma=0.5
+    {"image/jpeg"                                                                ,"sxiv"                     ,0}, // jpeg   // sxiv, feh, img2txt --gamma=0.5
+    {"image/png"                                                                 ,"sxiv"                     ,0}, // png    // sxiv, feh, img2txt --gamma=0.5
+    {"image/gif"                                                                 ,"sxiv -a"                  ,0}, // gif    // sxiv, feh, img2txt --gamma=0.5
+    {"audio/acc"                                                                 ,"mpv"                      ,0}, // acc
+    {"audio/mpeg"                                                                ,"mpv"                      ,0}, // mp2, mp3, mpeg
+    {"audio/wav"                                                                 ,"mpv"                      ,0}, // wav
+    {"video/mp4"                                                                 ,"mpv --geometry=100%x100%" ,0}, // mp4
+    {"video/x-flv"                                                               ,"mpv --geometry=100%x100%" ,0}, // flv
+    {"video/x-msvideo"                                                           ,"mpv --geometry=100%x100%" ,0}, // avi
+    /* {"video/quicktime"                                                           ,"mpv --geometry=100%x100%" ,0}, // quicktime */
+    /* {"video/webm"                                                                ,"mpv --geometry=100%x100%" ,0}, // weba, webm */
+    {"application/x-tar"                                                         ,"atool --list --"          ,0}, // tar
+    {"application/zip"                                                           ,"atool --list --"          ,0}, // zip
+    {"application/x-gzip"                                                        ,"atool --list --"          ,0}, // gz
+    {"application/rar"                                                           ,"atool --list --"          ,0}, // rar
+    {"application/x-7z-compressed"                                               ,"atool --list --"          ,0}, // 7z
+    /* {"application/x-bz"                                                          ,"atool --list --"          ,0}, // bz */
+    /* {"application/x-bz2"                                                         ,"atool --list --"          ,0}, // bz2 */
+    {"application/x-rar"                                                         ,"atool --list --"          ,0}, // rar
+    {"application/x-rar-compressed"                                              ,"atool --list --"          ,0}, // rar
+    /* {"application/x-cpio"                                                        ,"atool --list --"          ,0}, // cpio */
+    {"application/java-archive"                                                  ,"atool --list --"          ,0}, // java-archive
 };
 
-/* open rules for rest */ // Note: to get mime-type of a file: file --dereference --brief --mime-type file_name
-static const struct KFV open_map_else[] = {
-    /*mime-type                                                                  , & , application                */
-    {"inode/x-empty"                                                             , 0 , "vim"                      } ,
-    {"text/calendar"                                                             , 0 , "vim"                      } ,
-    {"text/css"                                                                  , 0 , "vim"                      } ,
-    {"text/csv"                                                                  , 0 , "vim"                      } ,
-    {"text/html"                                                                 , 0 , "vim"                      } ,
-    {"text/javascript"                                                           , 0 , "vim"                      } ,
-    {"text/plain"                                                                , 0 , "vim"                      } ,
-    {"text/troff"                                                                , 0 , "vim"                      } ,
-    {"text/x-shellscript"                                                        , 0 , "vim"                      } ,
-    {"text/x-c"                                                                  , 0 , "vim"                      } ,
-    {"text/x-c++"                                                                , 0 , "vim"                      } ,
-    {"text/x-java"                                                               , 0 , "vim"                      } ,
-    {"text/x-makefile"                                                           , 0 , "vim"                      } ,
-    {"text/x-ruby"                                                               , 0 , "vim"                      } ,
-    {"text/x-script.python"                                                      , 0 , "vim"                      } ,
-    {"text/x-tex"                                                                , 0 , "vim"                      } ,
-    {"text/x-diff"                                                               , 0 , "vim"                      } ,
-    {"text/xml"                                                                  , 0 , "vim"                      } ,
-    {"application/x-httpd-php"                                                   , 0 , "vim"                      } ,
-    {"application/x-javascript"                                                  , 0 , "vim"                      } ,
-    {"application/x-latex"                                                       , 0 , "vim"                      } ,
-    {"application/x-sh"                                                          , 0 , "vim"                      } ,
-    {"application/xhtml+xml"                                                     , 0 , "vim"                      } ,
-    {"application/xml"                                                           , 0 , "vim"                      } ,
-    {"application/json"                                                          , 0 , "vim"                      } ,
-    {"application/pdf"                                                           , 0 , "zathura"                  } ,
-    {"application/epub+zip"                                                      , 0 , "foliate"                  } ,
-    {"application/msword"                                                        , 0 , "libreoffice"              } ,
-    {"application/vnd.ms-excel"                                                  , 0 , "libreoffice"              } ,
-    {"application/vnd.ms-outlook"                                                , 0 , "libreoffice"              } ,
-    {"application/vnd.ms-powerpoint"                                             , 0 , "libreoffice"              } ,
-    {"application/vnd.ms-project"                                                , 0 , "libreoffice"              } ,
-    {"application/vnd.openxmlformats-officedocument.presentationml.presentation" , 0 , "libreoffice"              } ,
-    {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"         , 0 , "libreoffice"              } ,
-    {"application/vnd.openxmlformats-officedocument.wordprocessingml.document"   , 0 , "libreoffice"              } ,
-    {"application/vnd.visio"                                                     , 0 , "libreoffice"              } ,
-    {"image/bmp"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/gif"                                                                 , 0 , "sxiv -a"                  } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/ief"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/jpg"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/jpeg"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/pipeg"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/png"                                                                 , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/svg+xml"                                                             , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/tiff"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/webp"                                                                , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-cmu-raster"                                                        , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-cmx"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-icon"                                                              , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-rgb"                                                               , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-xbitmap"                                                           , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-xpixmap"                                                           , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"image/x-xwindowdump"                                                       , 0 , "sxiv"                     } , // sxiv, feh, img2txt --gamma=0.5
-    {"application/ogg"                                                           , 0 , "mpv"                      } ,
-    {"audio/3gpp"                                                                , 0 , "mpv"                      } ,
-    {"audio/3gpp2"                                                               , 0 , "mpv"                      } ,
-    {"audio/acc"                                                                 , 0 , "mpv"                      } ,
-    {"audio/midi"                                                                , 0 , "mpv"                      } ,
-    {"audio/mpeg"                                                                , 0 , "mpv"                      } ,
-    {"audio/ogg"                                                                 , 0 , "mpv"                      } ,
-    {"audio/wav"                                                                 , 0 , "mpv"                      } ,
-    {"audio/wave"                                                                , 0 , "mpv"                      } ,
-    {"audio/webm"                                                                , 0 , "mpv"                      } ,
-    {"audio/x-m4a"                                                               , 0 , "mpv"                      } ,
-    {"audio/x-midi"                                                              , 0 , "mpv"                      } ,
-    {"audio/x-mpegurl"                                                           , 0 , "mpv"                      } ,
-    {"audio/x-msvideo"                                                           , 0 , "mpv"                      } ,
-    {"audio/x-pn-wav"                                                            , 0 , "mpv"                      } ,
-    {"audio/x-realaudio"                                                         , 0 , "mpv"                      } ,
-    {"audio/x-wav"                                                               , 0 , "mpv"                      } ,
-    {"video/3gpp"                                                                , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/3gpp2"                                                               , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/mp4"                                                                 , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/ogg"                                                                 , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/quicktime"                                                           , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/webm"                                                                , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/x-flv"                                                               , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/x-m4v"                                                               , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/x-matroska"                                                          , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/x-ms-asf"                                                            , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/x-ms-wmv"                                                            , 0 , "mpv --geometry=100%x100%" } ,
-    {"video/x-sgi-moive"                                                         , 0 , "mpv --geometry=100%x100%" } ,
-    {"application/bz"                                                            , 0 , "atool --list --"          } ,
-    {"application/bz2"                                                           , 0 , "atool --list --"          } ,
-    {"application/rar"                                                           , 0 , "atool --list --"          } ,
-    {"application/x-7z-compressed"                                               , 0 , "atool --list --"          } ,
-    {"application/x-cpio"                                                        , 0 , "atool --list --"          } ,
-    {"application/x-gzip"                                                        , 0 , "atool --list --"          } ,
-    {"application/x-hdf"                                                         , 0 , "atool --list --"          } ,
-    {"application/x-rar"                                                         , 0 , "atool --list --"          } ,
-    {"application/x-rar-compressed"                                              , 0 , "atool --list --"          } ,
-    {"application/x-tar"                                                         , 0 , "atool --list --"          } ,
-    {"application/zip"                                                           , 0 , "atool --list --"          } ,
+static const struct ExecRule exec_rules[] = {
+    {"c"                         , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {"cpp"                       , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {"go"                        , "file_name=%s; go run ${file_name}"                                                                                                       },
+    {"java"                      , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {"jl"                        , "file_name=%s; julia ${file_name}"                                                                                                        },
+    {"js"                        , "file_name=%s; node ${file_name}"                                                                                                         },
+    {"lua"                       , "file_name=%s; lua ${file_name}"                                                                                                          },
+    {"py"                        , "file_name=%s; python ${file_name}"                                                                                                       },
+    {"rb"                        , "file_name=%s; ruby ${file_name}"                                                                                                         },
+    {"rs"                        , "file_name=%s; cargo build && cargo run"                                                                                                  },
+    {"scala"                     , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
+    {"sh"                        , "file_name=%s; sh ${file_name}"                                                                                                           },
+    {"sql"                       , "file_name=%s; mysql -uroot -p < ${file_name}"                                                                                            },
+    {"tex"                       , "file_name=%s; xelatex -interaction nonstopmode ${file_name}; bibtex *.aux; xelatex -interaction nonstopmode ${file_name}; zathura *.pdf" },
+    {"ts"                        , "file_name=%s; tsc ${file_name}"                                                                                                          },
 };
 
-/* exec rules */
-static const struct KV exec_map[] = {
-    /*.ext   , shell scripts                                                                                                                            */
-    {".c"    , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
-    {".cpp"  , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
-    {".go"   , "file_name=%s; go run ${file_name}"                                                                                                       },
-    {".java" , "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
-    {".jl"   , "file_name=%s; julia ${file_name}"                                                                                                        },
-    {".js"   , "file_name=%s; node ${file_name}"                                                                                                         },
-    {".lua"  , "file_name=%s; lua ${file_name}"                                                                                                          },
-    {".py"   , "file_name=%s; python ${file_name}"                                                                                                       },
-    {".rb"   , "file_name=%s; ruby ${file_name}"                                                                                                         },
-    {".rs"   , "file_name=%s; cargo build && cargo run"                                                                                                  },
-    {".scala", "file_name=%s; cd ${file_name%.*}; sh build.sh"                                                                                           },
-    {".sh"   , "file_name=%s; sh ${file_name}"                                                                                                           },
-    {".sql"  , "file_name=%s; mysql -uroot -p < ${file_name}"                                                                                            },
-    {".tex"  , "file_name=%s; xelatex -interaction nonstopmode ${file_name}; bibtex *.aux; xelatex -interaction nonstopmode ${file_name}; zathura *.pdf" },
-    {".ts"   , "file_name=%s; tsc ${file_name}"                                                                                                          },
-};
-
-/* exec rules for rest */
-static const struct KV exec_map_else[] = {
-    /**   , shell scripts                  */
-    {"*"  , "file_name=%s; sh ${file_name }" }, // any excuteble file
-};
-
-/* default options for cp, mv, rm */
-static const char *cp_opt = "-fr"; // recommended "-ir"
-static const char *mv_opt = "-f" ; // recommended "-i"
-static const char *rm_opt = "-fr"; // recommended "-ir"
+static const char *copy_opt = "-rf";
+static const char *move_opt = "-f" ;
+static const char *remove_opt = "-rf";

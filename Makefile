@@ -1,8 +1,8 @@
 
 include config.mk
 
-SRC  = chopin.c
-OBJ  = $(SRC:.c=.o)
+SRC  = chopin.cpp
+OBJ  = $(SRC:.cpp=.o)
 CPPFLAGS += -I../include
 
 all: options chopin
@@ -29,7 +29,7 @@ clean:
 
 dist: clean
 	mkdir -p chopin-${VERSION}
-	cp LICENSE README.md Makefile config.mk config.def.h chopin.h chopin.c chopin.1 build.sh chopin-${VERSION}
+	cp LICENSE README.md Makefile config.mk config.def.h chopin.h chopin.cpp chopin.1 build.sh chopin-${VERSION}
 	tar -cvf chopin-${VERSION}.tar chopin-${VERSION}
 	gzip chopin-${VERSION}.tar
 	rm -rf chopin-${VERSION}
