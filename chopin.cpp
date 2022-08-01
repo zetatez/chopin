@@ -27,6 +27,7 @@ typedef std::map<std::string , ExecRule> ExecMap;
 
 enum Action {NOACTION=0,MagicOpen,MagicExec,MagicCopy,MagicMove,MagicRemove};
 
+std::string replace(std::string, const std::string&, const std::string&);
 int magicOpen(const std::string filename);
 int magicExec(const std::string filename);
 int magicCopy(const std::string filename);
@@ -73,6 +74,9 @@ main(int argc, char *argv[]) {
     }
 
     if (!filename.length()) { return EXIT_FAILURE; }
+    filename = replace(filename, " ", "\\ ");
+    filename = replace(filename, "(", "\\(");
+    filename = replace(filename, ")", "\\)");
 
     int flag = -1;
     switch (action) {
@@ -91,6 +95,16 @@ main(int argc, char *argv[]) {
     }
 
     return (flag == 0) ? EXIT_SUCCESS: EXIT_FAILURE;
+}
+
+std::string
+replace(std::string str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
 }
 
 std::string
@@ -113,7 +127,6 @@ exec(std::string command) {
     pclose(pipe);
     return result;
 }
-
 
 std::string
 get_file_prefix(const std::string& filename) {
